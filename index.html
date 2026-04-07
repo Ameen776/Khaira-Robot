@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر أمين الزواحي - النسخة الاحترافية</title>
+    <title>مختبر أمين الزواحي - النسخة البرقية</title>
     <style>
         body { margin: 0; background: #050a14; color: #00ffcc; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-        .robot-frame { position: relative; width: 220px; height: 220px; border-radius: 50%; padding: 12px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 30px rgba(0,255,204,0.6); animation: pulse 2s infinite alternate; }
+        .robot-frame { position: relative; width: 220px; height: 220px; border-radius: 50%; padding: 12px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 35px rgba(0,255,204,0.7); animation: pulse 2s infinite alternate; }
         .robot-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #fff; }
-        #chat-box { width: 90%; max-width: 450px; height: 150px; background: rgba(0,0,0,0.8); border-radius: 15px; padding: 15px; margin-top: 25px; border: 1px solid #00ffcc; text-align: center; font-size: 1.1em; color: #fff; overflow-y: auto; }
-        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 18px 45px; border-radius: 50px; font-weight: bold; font-size: 1.3em; cursor: pointer; margin-top: 25px; box-shadow: 0 5px 20px rgba(0,255,204,0.4); }
-        .status-text { margin-top: 10px; color: #00ffcc; font-weight: bold; min-height: 20px; }
+        #chat-box { width: 90%; max-width: 450px; height: 150px; background: rgba(0,0,0,0.85); border-radius: 20px; padding: 20px; margin-top: 25px; border: 1px solid #00ffcc; text-align: center; font-size: 1.2em; color: #fff; overflow-y: auto; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 20px 50px; border-radius: 50px; font-weight: bold; font-size: 1.4em; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 25px rgba(0,255,204,0.5); transition: 0.3s; }
+        .btn-talk:hover { transform: scale(1.1); background: #fff; }
+        .status-info { margin-top: 10px; font-size: 0.9em; color: #00ffcc; font-weight: bold; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
     </style>
 </head>
@@ -20,18 +21,21 @@
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
     </div>
 
-    <div class="status-text" id="status-info">في انتظارك يا سيد أمين</div>
-    <div id="chat-box">اضغط للتحدث مع خيره...</div>
+    <div class="status-info" id="status">جاهزة لخدمتك يا سيد أمين</div>
+    <div id="chat-box">اضغط وتحدث معي الآن.. سأجيبك فوراً.</div>
     <button class="btn-talk" onclick="startRecognition()">تحدث مع خيره</button>
 
     <script>
-        const GEMINI_API = "AIzaSyBvS9aiLFIkBHxO7QqJM_F0upU-4TAyYc8";
+        // مفتاح Groq الذي أرسلته يا أمين
+        const GROQ_API_KEY = "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"; 
 
         function speak(text) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'ar-SA';
-            utter.pitch = 1.2;
+            utter.pitch = 1.1;
+            utter.rate = 1.0;
+            
             document.getElementById('frame').style.animation = "pulse 0.4s infinite alternate";
             synth.speak(utter);
             utter.onend = () => { document.getElementById('frame').style.animation = "pulse 2s infinite alternate"; };
@@ -42,56 +46,53 @@
             recognition.lang = 'ar-SA';
             
             recognition.onstart = () => {
-                document.getElementById('status-info').innerText = "أسمعك الآن...";
-                document.getElementById('chat-box').innerText = "تفضل يا باشا أمين...";
+                document.getElementById('status').innerText = "أسمعك الآن يا باشا...";
+                document.getElementById('chat-box').innerText = "تفضل يا سيد أمين..";
             };
 
             recognition.onresult = async (event) => {
                 const query = event.results[0][0].transcript;
                 document.getElementById('chat-box').innerText = "أنت: " + query;
-                await callAI(query);
+                await askGroq(query);
             };
 
-            recognition.onerror = () => { document.getElementById('status-info').innerText = "خطأ في السمع!"; };
+            recognition.onerror = () => {
+                document.getElementById('status').innerText = "عذراً، لم أسمعك!";
+            };
+
             recognition.start();
         }
 
-        async function callAI(query) {
-            document.getElementById('status-info').innerText = "خيره تفكر...";
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API}`;
-
+        async function askGroq(query) {
+            document.getElementById('status').innerText = "خيره تفكر بسرعة البرق...";
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ 
-                            parts: [{ text: `أنت خيره، ردي بذكاء للسيد أمين الزواحي على: ${query}` }] 
-                        }],
-                        // إعدادات الحماية للسماح بجميع الردود
-                        safetySettings: [
-                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: "أنت خيره، مساعدة ذكية ومرحة في مختبر أمين الزواحي. أجيبي للسيد أمين الزواحي بذكاء شديد واختصار. ناديه دائماً بـ سيد أمين أو يا باشا." },
+                            { role: "user", content: query }
                         ],
-                        generationConfig: { temperature: 0.7, topP: 1, topK: 1 }
+                        temperature: 0.8
                     })
                 });
 
                 const data = await response.json();
-
-                if (data.candidates && data.candidates[0].content) {
-                    const aiText = data.candidates[0].content.parts[0].text;
-                    document.getElementById('chat-box').innerText = "خيره: " + aiText;
-                    document.getElementById('status-info').innerText = "تتحدث الآن...";
-                    speak(aiText);
+                if (data.choices && data.choices[0]) {
+                    const aiReply = data.choices[0].message.content;
+                    document.getElementById('chat-box').innerText = aiReply;
+                    document.getElementById('status').innerText = "تتحدث الآن...";
+                    speak(aiReply);
                 } else {
-                    console.log(data); // للمطورين
-                    document.getElementById('chat-box').innerText = "المفتاح يحتاج تفعيل من Google AI Studio.";
+                    document.getElementById('chat-box').innerText = "حدث خطأ في العقل السريع، تأكد من المفتاح.";
                 }
             } catch (err) {
-                document.getElementById('chat-box').innerText = "خطأ في الشبكة.";
+                document.getElementById('chat-box').innerText = "خطأ في الاتصال بالشبكة.";
             }
         }
     </script>
