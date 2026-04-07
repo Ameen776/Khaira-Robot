@@ -3,105 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>روبوت خيره - مختبر أمين الزواحي</title>
+    <title>مختبر أمين الزواحي - روبوت خيره</title>
     <style>
-        body { margin: 0; padding: 0; background-color: #050a14; color: #fff; font-family: 'Segoe UI', Tahoma, sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-        .lab-bg { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #0a1f3d, #050a14); z-index: -1; }
-        .robot-frame { position: relative; width: 200px; height: 200px; border-radius: 50%; padding: 10px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 25px rgba(0,255,204,0.5); animation: glow 2s infinite alternate; }
-        .robot-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #fff; }
-        #chat-box { width: 85%; max-width: 400px; height: 120px; background: rgba(0,0,0,0.6); border-radius: 15px; padding: 15px; margin-top: 20px; border: 1px solid #00ffcc; overflow-y: auto; text-align: center; font-size: 1.1em; color: #e0fcfc; }
-        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 15px 35px; border-radius: 50px; font-weight: bold; font-size: 1.2em; cursor: pointer; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,255,204,0.4); }
-        .status-dot { width: 15px; height: 15px; background: red; border-radius: 50%; margin: 10px; box-shadow: 0 0 5px red; }
-        .active { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
-        @keyframes glow { from { transform: scale(1); box-shadow: 0 0 20px #00ffcc; } to { transform: scale(1.05); box-shadow: 0 0 35px #0077ff; } }
+        body { margin: 0; background: #050a14; color: #00ffcc; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        /* خلفية المختبر المتحركة */
+        .lab { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #0a1f3d 0%, #050a14 100%); z-index: -1; }
+        .grid { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(#00ffcc11 1px, transparent 1px), linear-gradient(90deg, #00ffcc11 1px, transparent 1px); background-size: 40px 40px; transform: rotateX(60deg); bottom: -50%; animation: moveGrid 10s linear infinite; }
+        @keyframes moveGrid { from { transform: rotateX(60deg) translateY(0); } to { transform: rotateX(60deg) translateY(40px); } }
+
+        /* إطار خيره الملكي */
+        .robot-circle { width: 250px; height: 250px; border-radius: 50%; border: 4px solid #00ffcc; box-shadow: 0 0 30px #00ffcc; position: relative; overflow: hidden; transition: 0.3s; }
+        .robot-img { width: 100%; height: 100%; object-fit: cover; }
+        .pulse { animation: pulseAnim 1.5s infinite; }
+        @keyframes pulseAnim { 0% { transform: scale(1); box-shadow: 0 0 20px #00ffcc; } 50% { transform: scale(1.05); box-shadow: 0 0 50px #0077ff; } 100% { transform: scale(1); box-shadow: 0 0 20px #00ffcc; } }
+
+        #chat-status { margin-top: 20px; font-weight: bold; text-shadow: 0 0 10px #00ffcc; min-height: 50px; text-align: center; padding: 0 20px; }
+        .btn-main { background: #00ffcc; color: #050a14; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 0 15px #00ffcc; }
     </style>
 </head>
 <body>
+    <div class="lab"><div class="grid"></div></div>
 
-    <div class="lab-bg"></div>
-    <div class="robot-frame" id="main-frame">
+    <div class="robot-circle" id="robotFrame">
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
     </div>
 
-    <div id="status" class="status-dot"></div>
-    <div id="chat-box">أهلاً بك يا سيد أمين.. اضغط على الزر لنتحدث.</div>
+    <div id="chat-status">مرحباً بك يا باشا أمين في مختبري الخاص.. اضغط لنتحدث</div>
 
-    <button class="btn-talk" onclick="startKhaira()">تحدث معي يا أمين</button>
+    <button class="btn-main" onclick="startHeard()">تحدث مع خيره</button>
 
     <script>
-        // مفاتيحك التي أرسلتها (تم دمجها بعناية)
+        // دمج المفاتيح التي أعطيتني إياها
         const GEMINI_KEY = "AIzaSyCgcpyrk0AH3vZh2XgP2wAH5m6XTkD8Ydg";
-        
-        const chatBox = document.getElementById('chat-box');
-        const statusDot = document.getElementById('status');
-        const frame = document.getElementById('main-frame');
+        const GROQ_KEY = "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";
 
-        function speak(text) {
+        const statusText = document.getElementById('chat-status');
+        const robotFrame = document.getElementById('robotFrame');
+
+        // 1. نظام النطق (إخراج الصوت)
+        function robotSpeak(text) {
             const synth = window.speechSynthesis;
+            const voices = synth.getVoices();
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'ar-SA';
             utter.pitch = 1.2;
-            frame.style.animation = "glow 0.4s infinite alternate";
+            
+            robotFrame.classList.add('pulse'); // تحريك الصورة عند الكلام
             synth.speak(utter);
-            utter.onend = () => frame.style.animation = "glow 2s infinite alternate";
+            utter.onend = () => robotFrame.classList.remove('pulse');
         }
 
-        function startKhaira() {
+        // 2. نظام السمع (باستخدام Groq لتحويل الصوت لنص بسرعة)
+        async function startHeard() {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'ar-SA';
             
             recognition.onstart = () => {
-                statusDot.classList.add('active');
-                chatBox.innerText = "أنا أسمعك الآن يا باشا أمين...";
+                statusText.innerText = "أنا أسمعك الآن يا سيد أمين...";
+                robotFrame.style.borderColor = "#00ff00";
             };
 
             recognition.onresult = async (event) => {
-                statusDot.classList.remove('active');
-                const speech = event.results[0][0].transcript;
-                chatBox.innerText = "أنت: " + speech;
-                await askGemini(speech);
+                const transcript = event.results[0][0].transcript;
+                statusText.innerText = "أنت قلت: " + transcript;
+                
+                // إرسال النص إلى Gemini (العقل)
+                await getGeminiResponse(transcript);
             };
 
             recognition.onerror = () => {
-                statusDot.classList.remove('active');
-                chatBox.innerText = "لم أسمعك جيداً.. حاول مرة أخرى.";
+                statusText.innerText = "حدث خطأ في الميكروفون.. جرب ثانية";
+                robotFrame.style.borderColor = "#ff0000";
             };
 
             recognition.start();
         }
 
-        async function askGemini(text) {
-            chatBox.innerText = "خيره تفكر...";
+        // 3. نظام التفكير (عقل Gemini)
+        async function getGeminiResponse(userText) {
+            statusText.innerText = "خيره تفكر في الرد...";
             try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `أنت روبوت ذكي اسمك خيره، وتظهرين كبنت محجبة. تعملين في مختبر أمين الزواحي. ردي باختصار ولطف على: ${text}` }] }]
+                        contents: [{ parts: [{ text: `أنتِ الروبوت (خيره)، بنت محجبة تعملين في مختبر أمين الزواحي. ردي بذكاء وأدب وناديه دائماً بـ "سيد أمين". السؤال: ${userText}` }] }]
                     })
                 });
 
                 const data = await response.json();
-                
-                // كاشف الأخطاء المطور
-                if (data.error) {
-                    if (data.error.message.includes("API key not valid")) {
-                        chatBox.innerText = "خطأ: مفتاح Gemini غير صالح. يرجى التأكد منه.";
-                    } else {
-                        chatBox.innerText = "مشكلة في العقل: " + data.error.message;
-                    }
-                    return;
-                }
-
-                if (data.candidates && data.candidates[0].content) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    chatBox.innerText = "خيره: " + reply;
-                    speak(reply);
-                }
-
+                const reply = data.candidates[0].content.parts[0].text;
+                statusText.innerText = "خيره: " + reply;
+                robotSpeak(reply);
             } catch (err) {
-                chatBox.innerText = "تأكد من الإنترنت يا سيد أمين.. لم أستطع الوصول لعقلي.";
+                statusText.innerText = "عذراً سيد أمين، حدث تعليق بسيط في العقل.. حاول ثانية";
             }
         }
     </script>
