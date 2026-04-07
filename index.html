@@ -4,75 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>نظام المطور أمين هارون الزواحي الذكي</title>
-    <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
-    <meta property="og:description" content="نظام ذكاء اصطناعي متطور للمساعدة الشخصية">
-    <meta property="og:image" content="https://i.ibb.co/4n7p0DLf/1775595508106c.png">
+    <title>نظام المطور أمين هارون الزواحي</title>
+    <meta name="description" content="نظام ذكاء اصطناعي متطور بإشراف المطور أمين هارون الزواحي">
+    
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-link.com/"> <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
+    <meta property="og:description" content="تواصل مع الذكاء الاصطناعي المطور خصيصاً لك.">
+    <meta property="og:image" content="https://i.ibb.co/4n7p0DLf/1775595508106c.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="مختبر المطور أمين هارون الزواحي">
+    <meta name="twitter:description" content="نظام ذكاء اصطناعي متطور">
     <meta name="twitter:image" content="https://i.ibb.co/4n7p0DLf/1775595508106c.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* ... (نفس الستايل السابق بدون تغيير لضمان الثبات) ... */
         :root { --neon: #00ffcc; --bg: #02050a; --panel: rgba(0, 15, 30, 0.95); --text: white; }
         .light-mode { --bg: #f0f2f5; --panel: rgba(255, 255, 255, 0.95); --text: #111; --neon: #0077ff; }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-
-        /* شاشة الدخول */
-        #login-screen {
-            position: fixed; inset: 0; z-index: 2000;
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg');
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .login-box {
-            background: var(--panel); padding: 30px; border-radius: 25px;
-            border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon);
-            text-align: center; width: 85%; max-width: 400px; display: flex; flex-direction: column; gap: 15px;
-        }
-        input#user-name {
-            width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon);
-            background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; outline: none;
-        }
+        #login-screen { position: fixed; inset: 0; z-index: 2000; background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon); text-align: center; width: 85%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
+        input#user-name { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; outline: none; }
         .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-
-        /* الواجهة الرئيسية */
         #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; position: relative; padding: 20px; }
-        
         .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--neon) 1px, transparent 1px), linear-gradient(90deg, var(--neon) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(600px) rotateX(60deg); bottom: -30%; opacity: 0.1; z-index: -1; animation: gridMove 10s linear infinite; }
         @keyframes gridMove { from { transform: perspective(600px) rotateX(60deg) translateY(0); } to { transform: perspective(600px) rotateX(60deg) translateY(40px); } }
-
-        .robot-frame { 
-            width: 70vw; height: 70vw; max-width: 330px; max-height: 330px; 
-            border-radius: 50%; border: 5px solid var(--neon); 
-            box-shadow: 0 0 40px var(--neon); overflow: hidden; position: relative;
-            cursor: pointer; transition: 0.3s;
-        }
-        .robot-frame:active { transform: scale(0.95); }
+        .robot-frame { width: 70vw; height: 70vw; max-width: 330px; max-height: 330px; border-radius: 50%; border: 5px solid var(--neon); box-shadow: 0 0 40px var(--neon); overflow: hidden; position: relative; cursor: pointer; transition: 0.3s; }
         .robot-img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         .speaking { animation: pulse 0.5s infinite alternate; border-color: #fff; }
         .listening-glow { box-shadow: 0 0 70px var(--neon); border-color: gold; }
-
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-
         .hamburger { position: absolute; top: 20px; left: 20px; z-index: 1500; cursor: pointer; font-size: 2.2rem; color: var(--neon); }
         .sidebar { position: fixed; top: 0; left: -320px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 1400; padding: 80px 20px; transition: 0.5s ease; }
         .sidebar.active { left: 0; }
-        
-        #chat-display { 
-            width: 95%; max-width: 550px; text-align: center; font-size: 1.1rem; 
-            background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon);
-            min-height: 100px; display: flex; align-items: center; justify-content: center;
-        }
-
+        #chat-display { width: 95%; max-width: 550px; text-align: center; font-size: 1.1rem; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); min-height: 100px; display: flex; align-items: center; justify-content: center; }
         .status-tag { color: var(--neon); font-size: 0.8rem; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
-
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color: var(--neon);">مختبر أمين هارون الزواحي</h2>
@@ -109,21 +82,17 @@
         const GROQ_API = "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";
         let userName = "";
         let recognition;
-
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
         function changeBot(url) { document.getElementById('bot-pic').src = url; }
-
         async function initApp() {
             userName = document.getElementById('user-name').value;
             if(!userName) return alert("الرجاء كتابة اسمك");
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-
             const welcome = `مرحباً بك يا ${userName}، أنا مبرمج من المطور أمين هارون الزواحي، ماذا تريد من المساعدة؟ اضغط على صورتي وتكلم.`;
             document.getElementById('chat-display').innerText = welcome;
             speak(welcome);
         }
-
         function speak(text) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
@@ -135,40 +104,30 @@
             };
             window.speechSynthesis.speak(msg);
         }
-
         function startListening() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(!Speech) return alert("المتصفح لا يدعم الصوت");
             if(recognition) recognition.stop();
-
             recognition = new Speech();
             recognition.lang = 'ar-SA';
-            
             recognition.onstart = () => { 
                 document.getElementById('chat-display').innerText = "أسمعك الآن يا " + userName + "..."; 
                 document.getElementById('status-text').innerText = "الحالة: المايك مفتوح 🎙️";
                 document.getElementById('robot-frame').classList.add('listening-glow');
             };
-            
             recognition.onresult = async (e) => {
                 const query = e.results[0][0].transcript;
                 document.getElementById('chat-display').innerText = "أنت: " + query;
                 document.getElementById('robot-frame').classList.remove('listening-glow');
                 await getAI(query);
             };
-
             recognition.onerror = () => {
                 document.getElementById('robot-frame').classList.remove('listening-glow');
                 document.getElementById('status-text').innerText = "الحالة: توقف (اضغط على الصورة لإعادة التشغيل)";
             };
-
-            recognition.onend = () => {
-                document.getElementById('robot-frame').classList.remove('listening-glow');
-            };
-
+            recognition.onend = () => { document.getElementById('robot-frame').classList.remove('listening-glow'); };
             recognition.start();
         }
-
         async function getAI(q) {
             document.getElementById('status-text').innerText = "الحالة: يفكر...";
             try {
@@ -177,19 +136,14 @@
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [
-                            { role: "system", content: `أنت المساعد الذكي للمطور أمين هارون الزواحي. تنادي المستخدم بـ ${userName}.` },
-                            { role: "user", content: q }
-                        ]
+                        messages: [{ role: "system", content: `أنت المساعد الذكي للمطور أمين هارون الزواحي. تنادي المستخدم بـ ${userName}.` }, { role: "user", content: q }]
                     })
                 });
                 const data = await res.json();
                 const reply = data.choices[0].message.content;
                 document.getElementById('chat-display').innerText = reply;
                 speak(reply);
-            } catch (e) { 
-                document.getElementById('status-text').innerText = "خطأ في الاتصال";
-            }
+            } catch (e) { document.getElementById('status-text').innerText = "خطأ في الاتصال"; }
         }
     </script>
 </body>
