@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>روبوت خيره - المختبر الذكي الملكي</title>
+    <style>
+        /* إعدادات الخلفية المتحركة للمختبر */
+        body { margin: 0; padding: 0; background-color: #050a14; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        /* تأثير الجزيئات المتحركة خلف الصورة */
+        .lab-background { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-image: radial-gradient(circle at 50% 50%, #0a1f3d, #050a14); z-index: -2; }
+        .lab-overlay { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: url('https://i.ibb.co/3W6Tf4W/scifi-grid.png'); /* رابط اختياري لشبكة رقمية */ opacity: 0.2; z-index: -1; animation: gridMove 20s linear infinite; }
+        .particles { position: absolute; width: 10px; height: 10px; background: #00ffcc; border-radius: 50%; opacity: 0.5; filter: blur(2px); animation: particleFloat 5s infinite; }
+        
+        /* إطار الروبوت الملكي */
+        .robot-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; }
+        .robot-frame { position: relative; width: 250px; height: 250px; border-radius: 50%; padding: 12px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 30px rgba(0,255,204,0.6); animation: robotGlow 2s infinite alternate; cursor: pointer; }
+        .robot-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 5px solid #fff; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        
+        /* شريط الحالة والاسم */
+        .status-area { margin-top: 15px; text-align: center; }
+        .status-light { width: 18px; height: 18px; background-color: #ff0000; border-radius: 50%; margin: 10px auto; box-shadow: 0 0 10px #ff0000; transition: background 0.3s; }
+        .active-listening { background-color: #00ff00 !important; box-shadow: 0 0 15px #00ff00 !important; }
+        #display-name { font-size: 1.4em; color: #00ffcc; text-shadow: 0 0 10px #00ffcc; }
+        
+        /* صندوق المحادثة */
+        #chat-box { width: 90%; max-width: 450px; height: 120px; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; margin-top: 25px; overflow-y: auto; border: 1px solid rgba(0,255,204,0.3); font-size: 1em; color: #e0fcfc; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        /* زر التحدث الملكي */
+        .btn-talk { background: linear-gradient(135deg, #00ffcc, #00bbcc); color: #050a14; border: none; padding: 18px 40px; border-radius: 50px; font-weight: bold; font-size: 1.3em; cursor: pointer; margin-top: 25px; box-shadow: 0 5px 20px rgba(0,255,204,0.5); transition: transform 0.1s, box-shadow 0.2s; z-index: 10; }
+        .btn-talk:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(0,255,204,0.3); }
+
+        /* حركات الـ CSS (Animations) */
+        @keyframes robotGlow { from { box-shadow: 0 0 20px rgba(0,255,204,0.5); transform: scale(1); } to { box-shadow: 0 0 40px rgba(0,119,255,0.7); transform: scale(1.03); } }
+        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+        @keyframes particleFloat { 0% { transform: translateY(0) translateX(0); opacity: 0.5; } 50% { transform: translateY(-100px) translateX(20px); opacity: 0.8; } 100% { transform: translateY(-200px) translateX(-10px); opacity: 0; } }
+        
+        /* إضافة جزيئات عشوائية خلفية */
+        .p1 { left: 10%; top: 20%; animation-delay: 0s; } .p2 { left: 80%; top: 30%; animation-delay: 1s; } .p3 { left: 30%; top: 70%; animation-delay: 2s; } .p4 { left: 60%; top: 80%; animation-delay: 3s; }
+    </style>
+</head>
+<body>
+
+    <div class="lab-background"></div>
+    <div class="lab-overlay"></div>
+    <div class="particles p1"></div><div class="particles p2"></div><div class="particles p3"></div><div class="particles p4"></div>
+
+    <div class="robot-container">
+        <div class="robot-frame" id="frame" onclick="startSystem()">
+            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره المحجبة">
+        </div>
+        
+        <div class="status-area">
+            <div id="status" class="status-light"></div>
+            <h2 id="display-name">خيره الملكية</h2>
+        </div>
+    </div>
+
+    <div id="chat-box">مرحبًا بك في مختبر أمين الزواحي... اضغط على صورتي أو الزر للتحدث.</div>
+
+    <button class="btn-talk" onclick="startSystem()">تحدث معي يا أمين</button>
+
+    <script>
+        // مفاتيح التحكم الملكية الخاصة بأمين الزواحي
+        const GEMINI_API_KEY = "AIzaSyCgcpyrk0AH3vZh2XgP2wAH5m6XTkD8Ydg";
+        const GROQ_API_KEY = "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";
+
+        const statusLight = document.getElementById('status');
+        const chatBox = document.getElementById('chat-box');
+        const frame = document.getElementById('frame');
+
+        // نظام نطق الروبوت (لسان خيره)
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utterThis = new SpeechSynthesisUtterance(text);
+            utterThis.lang = 'ar-SA'; // نطق عربي سعودي واضح
+            utterThis.pitch = 1.3; // صوت أنثوي رقيق
+            utterThis.rate = 1.0; // سرعة طبيعية
+            
+            // تحريك الإطار الملكي مع كل كلمة
+            frame.style.animation = "robotGlow 0.4s infinite alternate";
+            synth.speak(utterThis);
+            
+            utterThis.onend = () => { 
+                // إيقاف الحركة عند انتهاء الكلام
+                frame.style.animation = "robotGlow 2s infinite alternate"; 
+            };
+        }
+
+        // نظام السمع الذكي (أذن خيره - Groq)
+        function startSystem() {
+            chatBox.innerText = "خيره تستعد للسماع...";
+            
+            // تحقق من دعم المتصفح للسمع
+            if (!('webkitSpeechRecognition' in window)) {
+                chatBox.innerText = "عذراً يا سيد أمين، متصفحك لا يدعم السمع الذكي. استخدم Chrome.";
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'ar-YE'; // فهم اللهجة اليمنية/العربية
+            recognition.interimResults = false;
+            
+            recognition.onstart = () => {
+                statusLight.classList.add('active-listening');
+                chatBox.innerText = "أنا أسمعك الآن يا سيد أمين... تفضل.";
+            };
+
+            recognition.onerror = (event) => {
+                chatBox.innerText = "خطأ في السمع! جرب مرة أخرى.";
+                statusLight.classList.remove('active-listening');
+            };
+
+            recognition.onresult = async (event) => {
+                const userText = event.results[0][0].transcript;
+                chatBox.innerText = "أمين قال: " + userText;
+                statusLight.classList.remove('active-listening');
+                
+                // إرسال النص لعقل Gemini لتوليد الرد
+                await askGemini(userText);
+            };
+
+            recognition.start();
+        }
+
+        // نظام التفكير والذكاء (عقل خيره - Gemini)
+        async function askGemini(prompt) {
+            chatBox.innerText = "خيره تفكر في الرد المناسب...";
+            try {
+                // السياق الملكي للروبوت
+                const systemContext = `أنت الآن روبوت اسمك (خيره)، وتظهرين على شكل بنت محجبة محترمة جداً وأنيقة. أنت تعملين في مختبر التكنولوجيا الخاص بـ "أمين الزواحي". ردي دائماً بذكاء ولطف شديد، وناديه بلقب "سيد أمين" أو "باشا أمين" في كل رد. السؤال هو: ${prompt}`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: systemContext }] }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    chatBox.innerText = "خيره تقول: " + aiResponse;
+                    speak(aiResponse); // جعل الروبوت ينطق بالرد
+                } else {
+                    throw new Error("رد فارغ من Gemini");
+                }
+                
+            } catch (error) {
+                console.error(error);
+                chatBox.innerText = "خطأ في الاتصال بالعقل!";
+                speak("عذراً سيد أمين، هناك مشكلة في الاتصال بعقلي الاصطناعي الآن.");
+            }
+        }
+    </script>
+</body>
+</html>
