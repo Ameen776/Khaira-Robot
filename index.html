@@ -3,101 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر أمين الزواحي - النسخة الملكية</title>
+    <title>مختبر أمين الزواحي - النسخة النهائية</title>
     <style>
-        body { margin: 0; background: #050a14; color: #00ffcc; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .lab-bg { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #0a1f3d, #050a14); z-index: -1; }
-        .robot-frame { position: relative; width: 250px; height: 250px; border-radius: 50%; border: 4px solid #00ffcc; box-shadow: 0 0 30px #00ffcc; overflow: hidden; transition: 0.4s; }
+        body { margin: 0; background: #050a14; color: #00ffcc; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .robot-frame { position: relative; width: 230px; height: 230px; border-radius: 50%; border: 4px solid #00ffcc; box-shadow: 0 0 25px #00ffcc; overflow: hidden; transition: 0.3s; }
         .robot-img { width: 100%; height: 100%; object-fit: cover; }
-        .active-pulse { animation: pulse 0.6s infinite alternate; border-color: #0077ff; box-shadow: 0 0 50px #0077ff; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
-        #status-text { margin-top: 25px; font-size: 1.2em; height: 70px; text-align: center; padding: 0 20px; text-shadow: 0 0 10px #00ffcc; }
-        .btn-talk { background: linear-gradient(45deg, #00ffcc, #0077ff); color: #050a14; border: none; padding: 20px 50px; border-radius: 50px; font-weight: bold; font-size: 1.3em; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .talking { animation: pulse 0.4s infinite alternate; border-color: #0077ff; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
+        #status { margin-top: 20px; font-size: 1.1em; height: 80px; text-align: center; padding: 0 20px; color: #fff; }
+        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 18px 45px; border-radius: 50px; font-weight: bold; font-size: 1.2em; cursor: pointer; box-shadow: 0 5px 15px rgba(0,255,204,0.4); }
     </style>
 </head>
 <body>
-    <div class="lab-bg"></div>
 
-    <div class="robot-frame" id="picBox">
+    <div class="robot-frame" id="box">
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
     </div>
 
-    <div id="status-text">مرحباً بك يا سيد أمين الزواحي.. أنا "خيره" بانتظار صوتك.</div>
+    <div id="status">أهلاً بك يا سيد أمين.. اضغط للتحدث مع "خيره"</div>
 
-    <button class="btn-talk" onclick="startSystem()">تحدث مع خيره</button>
+    <button class="btn-talk" onclick="startRecognition()">تحدث مع خيره</button>
 
     <script>
-        // دمج المفاتيح الرسمية لأمين الزواحي
-        const GEMINI_KEY = "AIzaSyCgcpyrk0AH3vZh2XgP2wAH5m6XTkD8Ydg";
+        // مفاتيح أمين الزواحي
+        const G_KEY = "AIzaSyCgcpyrk0AH3vZh2XgP2wAH5m6XTkD8Ydg";
         const GROQ_KEY = "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";
 
-        const statusLabel = document.getElementById('status-text');
-        const picBox = document.getElementById('picBox');
+        const statusDiv = document.getElementById('status');
+        const box = document.getElementById('box');
 
-        // نظام النطق (إخراج الصوت)
-        function robotSpeak(text) {
+        // وظيفة النطق الصوتي
+        function speak(text) {
             const synth = window.speechSynthesis;
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'ar-SA';
-            utter.pitch = 1.3;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA';
+            utterance.pitch = 1.3;
             
-            picBox.classList.add('active-pulse');
-            synth.speak(utter);
-            utter.onend = () => picBox.classList.remove('active-pulse');
+            box.classList.add('talking');
+            synth.speak(utterance);
+            utterance.onend = () => box.classList.remove('talking');
         }
 
-        // نظام السمع (التقاط الصوت)
-        function startSystem() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'ar-SA';
+        // وظيفة الاستماع
+        function startRecognition() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) {
+                statusDiv.innerText = "متصفحك لا يدعم الصوت. استخدم Chrome.";
+                return;
+            }
 
-            recognition.onstart = () => {
-                statusLabel.innerText = "أنا أسمعك الآن يا سيد أمين بوضوح...";
-                picBox.style.borderColor = "#00ff00";
+            const rec = new Speech();
+            rec.lang = 'ar-SA';
+
+            rec.onstart = () => {
+                statusDiv.innerText = "أنا أسمعك الآن يا سيد أمين.. تفضل بالحديث.";
             };
 
-            recognition.onresult = async (event) => {
-                const transcript = event.results[0][0].transcript;
-                statusLabel.innerText = "أمين قال: " + transcript;
+            rec.onresult = async (event) => {
+                const query = event.results[0][0].transcript;
+                statusDiv.innerText = "أمين قال: " + query;
                 
-                // تشغيل العقل (Gemini أولاً ثم Groq كاحتياط)
-                await askAI(transcript);
+                // إرسال السؤال للعقل الحقيقي (Gemini)
+                await getAIResponse(query);
             };
 
-            recognition.onerror = () => {
-                statusLabel.innerText = "حدث خطأ في الميكروفون.. جرب ثانية.";
-            };
-
-            recognition.start();
+            rec.start();
         }
 
-        // المحرك الذكي (عقل Gemini + Groq)
-        async function askAI(userInput) {
-            statusLabel.innerText = "خيره تحلل الكلام بعقل Gemini...";
+        // وظيفة جلب الرد الذكي
+        async function getAIResponse(userInput) {
+            statusDiv.innerText = "خيره تفكر في الإجابة...";
             try {
-                // محاولة الاتصال بـ Gemini
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${G_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `أنتِ الروبوت (خيره)، بنت محجبة ذكية في مختبر أمين الزواحي. ردي بذكاء وأدب وناديه دائماً بـ "سيد أمين". السؤال: ${userInput}` }] }]
+                        contents: [{ parts: [{ text: `أنتِ الروبوت (خيره)، بنت محجبة تعملين في مختبر التكنولوجيا الخاص بـ "أمين الزواحي". ردي بذكاء وأدب وناديه بـ "سيد أمين". السؤال: ${userInput}` }] }]
                     })
                 });
 
                 const data = await response.json();
                 
+                // التحقق من وصول الرد بنجاح
                 if (data.candidates && data.candidates[0].content) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    statusLabel.innerText = "خيره (Gemini): " + reply;
-                    robotSpeak(reply);
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    statusDiv.innerText = "خيره: " + aiReply;
+                    speak(aiReply);
                 } else {
-                    // إذا فشل Gemini، ننتقل فوراً لـ Groq
-                    throw new Error("Switch to Groq");
+                    throw new Error("فشل Gemini");
                 }
-
             } catch (err) {
-                statusLabel.innerText = "خيره تستخدم عقل Groq السريع...";
-                // محاولة الاتصال بـ Groq كبديل فوري وقوي
+                // إذا فشل Gemini، نستخدم عقل Groq السريع
                 try {
                     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST",
@@ -106,17 +102,17 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            model: "mixtral-8x7b-32768",
-                            messages: [{ role: "user", content: `رد باختصار وبذكاء كأنك روبوت اسمك خيره في مختبر أمين الزواحي. وناديه بـ سيد أمين. السؤال: ${userInput}` }]
+                            model: "llama3-8b-8192",
+                            messages: [{ role: "user", content: `أنتِ الروبوت خيره، ردي بذكاء على سيد أمين. السؤال: ${userInput}` }]
                         })
                     });
                     const groqData = await groqRes.json();
                     const groqReply = groqData.choices[0].message.content;
-                    statusLabel.innerText = "خيره (Groq): " + groqReply;
-                    robotSpeak(groqReply);
+                    statusDiv.innerText = "خيره (Groq): " + groqReply;
+                    speak(groqReply);
                 } catch (e) {
-                    statusLabel.innerText = "أهلاً بك يا سيد أمين، أنا أسمعك بوضوح!";
-                    robotSpeak("أهلاً بك يا سيد أمين الزواحي، أنا أسمعك بوضوح وجاهزة لخدمتك.");
+                    statusDiv.innerText = "سيد أمين، أنا أسمعك لكن عقلي يحتاج لإعادة اتصال بالإنترنت.";
+                    speak("أهلاً بك يا سيد أمين الزواحي، أنا أسمعك بوضوح ولكن يبدو أن هناك ضغطاً على خوادم الذكاء الاصطناعي الآن.");
                 }
             }
         }
