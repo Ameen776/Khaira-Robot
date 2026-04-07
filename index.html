@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>مختبر المطور أمين هارون الزواحي</title>
+    <title>نظام سارة - تطوير أمين الزواحي</title>
     
-    <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
+    <meta property="og:title" content="سارة - الذكاء الاصطناعي للمطور أمين الزواحي">
     <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
     <meta property="og:type" content="website">
 
@@ -18,7 +18,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-        /* شاشة الدخول */
         #login-screen {
             position: fixed; inset: 0; z-index: 2000;
             background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
@@ -35,10 +34,8 @@
             width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon);
             background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; outline: none;
         }
-        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
-        .enter-btn:active { transform: scale(0.9); }
+        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
 
-        /* الواجهة الرئيسية */
         #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; position: relative; padding: 20px; }
         .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--neon) 1px, transparent 1px), linear-gradient(90deg, var(--neon) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(600px) rotateX(60deg); bottom: -30%; opacity: 0.1; z-index: -1; animation: gridMove 10s linear infinite; }
         @keyframes gridMove { from { transform: perspective(600px) rotateX(60deg) translateY(0); } to { transform: perspective(600px) rotateX(60deg) translateY(40px); } }
@@ -59,7 +56,7 @@
         .sidebar.active { left: 0; }
         
         #chat-display { width: 95%; max-width: 550px; text-align: center; font-size: 1.1rem; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); min-height: 100px; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        .status-tag { color: var(--neon); font-size: 0.8rem; margin-top: 5px; font-weight: bold; }
+        .status-tag { color: var(--neon); font-size: 0.9rem; margin-top: 10px; font-weight: bold; text-shadow: 0 0 5px var(--neon); }
     </style>
 </head>
 <body>
@@ -67,8 +64,8 @@
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color: var(--neon);">مختبر أمين الزواحي</h2>
-            <input type="text" id="user-name" placeholder="ادخل اسمك هنا..." autocomplete="off">
-            <button class="enter-btn" onclick="initApp()">تفعيل النظام الملكي</button>
+            <input type="text" id="user-name" placeholder="ادخل اسمك للدخول...">
+            <button class="enter-btn" onclick="initApp()">تفعيل نظام سارة الملكي</button>
         </div>
     </div>
 
@@ -91,17 +88,14 @@
         <div class="robot-frame" id="robot-frame" onclick="handleRobotClick()">
             <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="bot-pic" class="robot-img">
         </div>
-        <div id="chat-display">جاري التحميل...</div>
-        <div class="status-tag" id="status-text">الحالة: متصل</div>
+        <div id="chat-display">أهلاً بك.. أنا سارة</div>
+        <div class="status-tag" id="status-text">الحالة: اضغط على الصورة للتحدث</div>
     </div>
 
     <script>
         const GROQ_API = "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";
         let userName = "";
         let recognition;
-
-        // تجهيز مسبق لمحرك الصوت
-        window.speechSynthesis.getVoices();
 
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
         function changeBot(url) { document.getElementById('bot-pic').src = url; }
@@ -115,12 +109,10 @@
             userName = document.getElementById('user-name').value;
             if(!userName) return alert("الرجاء كتابة اسمك");
 
-            // عرض الواجهة فوراً
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
 
-            // الترحيب الفوري
-            const welcomeMsg = `مرحباً بك يا ${userName}، أنا مبرمج من المطور أمين هارون الزواحي، ماذا تريد من المساعدة؟`;
+            const welcomeMsg = `مرحباً بك يا ${userName}، أنا اسمي سارة، ذكاء اصطناعي، تم تطويري بواسطة أمين هارون الزواحي، كيف يمكنني مساعدتك اليوم؟`;
             document.getElementById('chat-display').innerText = welcomeMsg;
             speak(welcomeMsg);
         }
@@ -129,12 +121,12 @@
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'ar-SA';
-            msg.rate = 1.1; // تسريع الصوت قليلاً ليكون الرد أسرع
+            msg.rate = 1.0;
             
             document.getElementById('robot-frame').classList.add('speaking');
             msg.onend = () => {
                 document.getElementById('robot-frame').classList.remove('speaking');
-                document.getElementById('status-text').innerText = "الحالة: جاهز (اضغط لتتكلم)";
+                document.getElementById('status-text').innerText = "الحالة: اضغط على الصورة للتحدث";
             };
             window.speechSynthesis.speak(msg);
         }
@@ -146,7 +138,8 @@
             recognition = new Speech();
             recognition.lang = 'ar-SA';
             recognition.onstart = () => { 
-                document.getElementById('chat-display').innerText = "أسمعك الآن يا " + userName + "..."; 
+                document.getElementById('chat-display').innerText = "أسمعكِ الآن..."; 
+                document.getElementById('status-text').innerText = "الحالة: جاري الاستماع 🎙️";
                 document.getElementById('robot-frame').classList.add('listening-glow');
             };
             recognition.onresult = async (e) => {
@@ -157,13 +150,13 @@
             };
             recognition.onerror = () => {
                 document.getElementById('robot-frame').classList.remove('listening-glow');
-                document.getElementById('status-text').innerText = "اضغط للتحدث";
+                document.getElementById('status-text').innerText = "الحالة: اضغط على الصورة للتحدث";
             };
             recognition.start();
         }
 
         async function getAI(q) {
-            document.getElementById('status-text').innerText = "جاري التفكير...";
+            document.getElementById('status-text').innerText = "الحالة: سارة تفكر...";
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
@@ -173,7 +166,12 @@
                         messages: [
                             { 
                                 role: "system", 
-                                content: `أنت المساعد الذكي للمطور أمين هارون الزواحي. المستخدم هو ${userName}. أمين مبرمج مواقع وتطبيقات ومؤثر على فيسبوك (أمين الزواحي). ممنوع الحديث عن الاختراق.` 
+                                content: `أنتِ اسمكِ سارة، ذكاء اصطناعي متطور. المستخدم هو ${userName}. 
+                                معلومات هامة جداً:
+                                1. إذا سألك أحد عن اسمكِ، قولي: "أنا اسمي سارة، ذكاء اصطناعي".
+                                2. في نهاية أي تعريف بنفسكِ، يجب أن تقولي: "تم تطويري بواسطة أمين الزواحي".
+                                3. أمين الزواحي هو مبرمج مواقع وتطبيقات محترف وشخصية مؤثرة.
+                                4. ممنوع الحديث عن الاختراق نهائياً.` 
                             },
                             { role: "user", content: q }
                         ]
