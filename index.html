@@ -3,73 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر أمين الزواحي - العقل السريع</title>
+    <title>مختبر المطور أمين الزواحي</title>
     <style>
-        body { margin: 0; background: #050a14; color: #00ffcc; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-        .robot-frame { position: relative; width: 220px; height: 220px; border-radius: 50%; padding: 12px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 35px rgba(0,255,204,0.7); animation: pulse 2s infinite alternate; }
+        :root { --neon: #00ffcc; --glow: rgba(0, 255, 204, 0.4); }
+        body { margin: 0; background: #02050a; color: white; font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* خلفية 3D متحركة (شبكة إنترنت) */
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: 
+            linear-gradient(rgba(0, 20, 40, 0.8), rgba(0, 5, 10, 0.9)),
+            url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); z-index: -1; }
+        .grid { position: absolute; width: 200%; height: 200%; background-image: 
+            linear-gradient(var(--neon) 1px, transparent 1px),
+            linear-gradient(90deg, var(--neon) 1px, transparent 1px);
+            background-size: 50px 50px; transform: perspective(500px) rotateX(60deg);
+            bottom: -50%; animation: grid-move 10s linear infinite; opacity: 0.15; }
+
+        /* إطار الروبوت المطور */
+        .robot-container { position: relative; z-index: 10; }
+        .robot-frame { width: 250px; height: 250px; border-radius: 50%; padding: 10px; 
+            background: conic-gradient(from 0deg, var(--neon), #0077ff, var(--neon));
+            box-shadow: 0 0 50px var(--glow); position: relative; transition: 0.3s; }
         .robot-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #fff; }
-        #chat-box { width: 90%; max-width: 450px; height: 150px; background: rgba(0,0,0,0.85); border-radius: 20px; padding: 20px; margin-top: 25px; border: 1px solid #00ffcc; text-align: center; font-size: 1.2em; color: #fff; display: flex; align-items: center; justify-content: center; }
-        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 20px 50px; border-radius: 50px; font-weight: bold; font-size: 1.4em; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 25px rgba(0,255,204,0.5); }
-        .status-info { margin-top: 10px; font-size: 0.9em; color: #00ffcc; font-weight: bold; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        
+        /* أنيميشن الكلام (حركة الشفاه الافتراضية) */
+        .talking { animation: lip-sync 0.2s infinite alternate !important; }
+
+        #chat-box { width: 85%; max-width: 500px; min-height: 120px; background: rgba(0, 15, 30, 0.9); 
+            border: 2px solid var(--neon); border-radius: 20px; margin-top: 30px; padding: 20px;
+            text-align: center; font-size: 1.2em; box-shadow: 0 0 20px var(--glow); z-index: 10; }
+
+        .btn-talk { background: var(--neon); color: #000; border: none; padding: 15px 40px; 
+            border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; 
+            z-index: 10; box-shadow: 0 0 15px var(--neon); transition: 0.3s; }
+
+        @keyframes grid-move { from { transform: perspective(500px) rotateX(60deg) translateY(0); } 
+                               to { transform: perspective(500px) rotateX(60deg) translateY(50px); } }
+        @keyframes lip-sync { from { transform: scale(1); } to { transform: scale(1.08); filter: brightness(1.2); } }
     </style>
 </head>
 <body>
 
-    <div class="robot-frame" id="frame">
-        <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
+    <div class="bg-overlay"></div>
+    <div class="grid"></div>
+
+    <div class="robot-container">
+        <div class="robot-frame" id="frame">
+            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
+        </div>
     </div>
 
-    <div class="status-info" id="status">نظام Groq السريع متصل</div>
-    <div id="chat-box">أهلاً بك يا سيد أمين.. أنا جاهزة الآن تماماً.</div>
-    <button class="btn-talk" onclick="startRecognition()">تحدث مع خيره</button>
+    <div id="chat-box">بانتظار أوامرك يا مطور أمين...</div>
+    <button class="btn-talk" onclick="initRobot()">تفعيل النظام الملكي</button>
 
     <script>
-        // مفتاح Groq الجديد الخاص بك
-        const MY_KEY = "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"; 
+        const GROQ_KEY = "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";
+        let isListening = false;
 
-        function speak(text) {
+        // ترحيب البداية
+        function welcomeMessage() {
+            const text = "مرحباً بك، أنا ذكاء اصطناعي مبرمج من المطور أمين الزواحي، اسأل وسأجيبك على جميع الأسئلة.";
+            document.getElementById('chat-box').innerText = text;
+            speak(text, true); // true تعني ابدأ الاستماع بعد الترحيب
+        }
+
+        function speak(text, startAutoListen = false) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'ar-SA';
-            document.getElementById('frame').style.animation = "pulse 0.4s infinite alternate";
+            
+            // بدء الحركة
+            document.getElementById('frame').classList.add('talking');
+            
+            utter.onend = () => {
+                document.getElementById('frame').classList.remove('talking');
+                if (startAutoListen) startContinuousListening();
+            };
+            
             synth.speak(utter);
-            utter.onend = () => { document.getElementById('frame').style.animation = "pulse 2s infinite alternate"; };
         }
 
-        function startRecognition() {
-            const recognition = new (window.webkitSpeechRecognition || window.Recognition)();
+        function initRobot() {
+            if(!isListening) {
+                welcomeMessage();
+                isListening = true;
+            }
+        }
+
+        function startContinuousListening() {
+            const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
             recognition.lang = 'ar-SA';
-            recognition.onstart = () => { document.getElementById('chat-box').innerText = "أسمعك يا سيد أمين..."; };
+            
+            recognition.onstart = () => { document.getElementById('chat-box').innerText = "أسمعك الآن يا سيد أمين (تحدث)..."; };
+            
             recognition.onresult = async (event) => {
                 const query = event.results[0][0].transcript;
                 document.getElementById('chat-box').innerText = "أنت: " + query;
-                await askAi(query);
+                await getResponse(query);
             };
+
+            recognition.onerror = () => { startContinuousListening(); }; // إعادة التشغيل في حال الخطأ
+            recognition.onend = () => { /* سيعاد تشغيله بعد رد الروبوت */ };
             recognition.start();
         }
 
-        async function askAi(query) {
-            document.getElementById('status').innerText = "خيره تحلل البيانات...";
+        async function getResponse(query) {
             try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${MY_KEY}`
-                    },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_KEY}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: `أنت خيره، مساعدة ذكية لأمين الزواحي. ردي بذكاء وقصر: ${query}` }]
+                        messages: [{ role: "system", content: "أنت خيره، مساعدة ذكية صممها المطور أمين الزواحي. ردي بذكاء وفخامة." },
+                                   { role: "user", content: query }]
                     })
                 });
-
-                const data = await response.json();
-                const aiReply = data.choices[0].message.content;
-                document.getElementById('chat-box').innerText = aiReply;
-                speak(aiReply);
-            } catch (err) {
-                document.getElementById('chat-box').innerText = "تأكد من حفظ الملف بشكل صحيح في GitHub.";
+                const data = await res.json();
+                const reply = data.choices[0].message.content;
+                document.getElementById('chat-box').innerText = reply;
+                speak(reply, true); // استمع مرة أخرى بعد الرد
+            } catch (e) {
+                startContinuousListening();
             }
         }
     </script>
