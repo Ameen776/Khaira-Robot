@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر أمين الزواحي - النسخة البرقية</title>
+    <title>مختبر أمين الزواحي - العقل السريع</title>
     <style>
         body { margin: 0; background: #050a14; color: #00ffcc; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
         .robot-frame { position: relative; width: 220px; height: 220px; border-radius: 50%; padding: 12px; background: linear-gradient(135deg, #00ffcc, #0077ff); box-shadow: 0 0 35px rgba(0,255,204,0.7); animation: pulse 2s infinite alternate; }
         .robot-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #fff; }
-        #chat-box { width: 90%; max-width: 450px; height: 150px; background: rgba(0,0,0,0.85); border-radius: 20px; padding: 20px; margin-top: 25px; border: 1px solid #00ffcc; text-align: center; font-size: 1.2em; color: #fff; overflow-y: auto; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 20px 50px; border-radius: 50px; font-weight: bold; font-size: 1.4em; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 25px rgba(0,255,204,0.5); transition: 0.3s; }
-        .btn-talk:hover { transform: scale(1.1); background: #fff; }
+        #chat-box { width: 90%; max-width: 450px; height: 150px; background: rgba(0,0,0,0.85); border-radius: 20px; padding: 20px; margin-top: 25px; border: 1px solid #00ffcc; text-align: center; font-size: 1.2em; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .btn-talk { background: #00ffcc; color: #050a14; border: none; padding: 20px 50px; border-radius: 50px; font-weight: bold; font-size: 1.4em; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 25px rgba(0,255,204,0.5); }
         .status-info { margin-top: 10px; font-size: 0.9em; color: #00ffcc; font-weight: bold; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
     </style>
@@ -21,78 +20,56 @@
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" alt="خيره">
     </div>
 
-    <div class="status-info" id="status">جاهزة لخدمتك يا سيد أمين</div>
-    <div id="chat-box">اضغط وتحدث معي الآن.. سأجيبك فوراً.</div>
+    <div class="status-info" id="status">نظام Groq السريع متصل</div>
+    <div id="chat-box">أهلاً بك يا سيد أمين.. أنا جاهزة الآن تماماً.</div>
     <button class="btn-talk" onclick="startRecognition()">تحدث مع خيره</button>
 
     <script>
-        // مفتاح Groq الذي أرسلته يا أمين
-        const GROQ_API_KEY = "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"; 
+        // مفتاح Groq الجديد الخاص بك
+        const MY_KEY = "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"; 
 
         function speak(text) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'ar-SA';
-            utter.pitch = 1.1;
-            utter.rate = 1.0;
-            
             document.getElementById('frame').style.animation = "pulse 0.4s infinite alternate";
             synth.speak(utter);
             utter.onend = () => { document.getElementById('frame').style.animation = "pulse 2s infinite alternate"; };
         }
 
         function startRecognition() {
-            const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
+            const recognition = new (window.webkitSpeechRecognition || window.Recognition)();
             recognition.lang = 'ar-SA';
-            
-            recognition.onstart = () => {
-                document.getElementById('status').innerText = "أسمعك الآن يا باشا...";
-                document.getElementById('chat-box').innerText = "تفضل يا سيد أمين..";
-            };
-
+            recognition.onstart = () => { document.getElementById('chat-box').innerText = "أسمعك يا سيد أمين..."; };
             recognition.onresult = async (event) => {
                 const query = event.results[0][0].transcript;
                 document.getElementById('chat-box').innerText = "أنت: " + query;
-                await askGroq(query);
+                await askAi(query);
             };
-
-            recognition.onerror = () => {
-                document.getElementById('status').innerText = "عذراً، لم أسمعك!";
-            };
-
             recognition.start();
         }
 
-        async function askGroq(query) {
-            document.getElementById('status').innerText = "خيره تفكر بسرعة البرق...";
+        async function askAi(query) {
+            document.getElementById('status').innerText = "خيره تحلل البيانات...";
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                        "Authorization": `Bearer ${MY_KEY}`
                     },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [
-                            { role: "system", content: "أنت خيره، مساعدة ذكية ومرحة في مختبر أمين الزواحي. أجيبي للسيد أمين الزواحي بذكاء شديد واختصار. ناديه دائماً بـ سيد أمين أو يا باشا." },
-                            { role: "user", content: query }
-                        ],
-                        temperature: 0.8
+                        messages: [{ role: "user", content: `أنت خيره، مساعدة ذكية لأمين الزواحي. ردي بذكاء وقصر: ${query}` }]
                     })
                 });
 
                 const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    const aiReply = data.choices[0].message.content;
-                    document.getElementById('chat-box').innerText = aiReply;
-                    document.getElementById('status').innerText = "تتحدث الآن...";
-                    speak(aiReply);
-                } else {
-                    document.getElementById('chat-box').innerText = "حدث خطأ في العقل السريع، تأكد من المفتاح.";
-                }
+                const aiReply = data.choices[0].message.content;
+                document.getElementById('chat-box').innerText = aiReply;
+                speak(aiReply);
             } catch (err) {
-                document.getElementById('chat-box').innerText = "خطأ في الاتصال بالشبكة.";
+                document.getElementById('chat-box').innerText = "تأكد من حفظ الملف بشكل صحيح في GitHub.";
             }
         }
     </script>
