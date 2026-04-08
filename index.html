@@ -5,17 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>مختبر المطور أمين هارون الزواحي</title>
-    <meta name="description" content="نظام ذكاء اصطناعي متطور للمطور أمين هارون الزواحي">
-    <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
-    <meta property="og:description" content="تحدث مع الروبوت الذكي المبرمج بواسطة أمين الزواحي">
     <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
-    <meta property="og:image:secure_url" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="600">
-    <meta property="og:image:height" content="600">
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_FREE_KEY"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -24,27 +18,23 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-        #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000 url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg') center/cover; display: none; align-items: center; justify-content: center; }
-        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon); text-align: center; width: 85%; max-width: 400px; }
-        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; outline: none; }
-        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; }
+        #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; }
+        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: white; text-align: center; margin-bottom: 15px; }
+        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 4px 10px 4px 5px; border-radius: 50px; border: 1px solid var(--neon); cursor: pointer; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon); object-fit: cover; }
-        .user-name-display { font-weight: bold; font-size: 0.8rem; color: var(--neon); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 50px; border: 1px solid var(--neon); }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
 
-        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; position: relative; }
-        .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--neon) 1px, transparent 1px), linear-gradient(90deg, var(--neon) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(600px) rotateX(60deg); bottom: -30%; opacity: 0.1; z-index: -1; }
-        .robot-frame { width: 65vw; height: 65vw; max-width: 280px; max-height: 280px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
+        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; }
+        .robot-frame { width: 250px; height: 250px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 20px var(--neon); overflow: hidden; cursor: pointer; }
         .robot-img { width: 100%; height: 100%; object-fit: cover; }
-        .speaking { animation: pulse 0.4s infinite alternate; border-color: #fff; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
-
-        .hamburger { position: fixed; top: 15px; left: 15px; z-index: 1600; cursor: pointer; font-size: 2rem; color: var(--neon); display: none; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 1550; padding: 70px 20px; transition: 0.4s; }
-        .sidebar.active { left: 0; }
-        #chat-display { width: 90%; max-width: 500px; text-align: center; font-size: 1.05rem; background: var(--panel); padding: 18px; border-radius: 18px; border: 1px solid var(--neon); min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .status-tag { color: var(--neon); font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+        
+        #chat-display { width: 90%; max-width: 500px; text-align: center; background: var(--panel); padding: 20px; border-radius: 15px; border: 1px solid var(--neon); min-height: 80px; }
+        .status-tag { color: var(--neon); font-size: 0.8rem; font-weight: bold; margin-top: 10px; }
+        
+        .speaking { animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
     </style>
 </head>
 <body>
@@ -53,25 +43,17 @@
         <div class="login-box">
             <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
             <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
-            <button class="enter-btn" onclick="registerUser()">تفعيل النظام الملكي</button>
+            <button class="enter-btn" onclick="registerUser()">دخول النظام</button>
         </div>
     </div>
 
-    <div class="user-profile-header" id="profile-header" onclick="document.getElementById('file-input').click()">
+    <div class="user-profile-header" id="profile-header">
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="user-avatar" id="profile-pic">
-        <span class="user-name-display" id="profile-name">...</span>
-        <input type="file" id="file-input" style="display: none;" accept="image/*" onchange="uploadImage(event)">
-    </div>
-
-    <div class="hamburger" id="ham-icon" onclick="toggleMenu()">☰</div>
-    <div class="sidebar" id="sidebar">
-        <button onclick="document.body.classList.toggle('light-mode')" style="width:100%; padding:10px; background:var(--neon); border:none; cursor:pointer; font-weight: bold;">🌗 وضع النهار/الليل</button>
-        <button onclick="logoutUser()" style="width:100%; padding:10px; background:#ff4444; color:white; border:none; cursor:pointer; font-weight: bold; margin-top:20px;">🚪 تسجيل الخروج</button>
+        <span id="profile-name" style="font-size: 0.8rem;"></span>
     </div>
 
     <div id="main-app">
-        <div class="grid"></div>
-        <div class="robot-frame" id="robot-frame" onclick="handleRobotClick()">
+        <div class="robot-frame" id="robot-frame" onclick="startListening()">
             <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="bot-pic" class="robot-img">
         </div>
         <div id="chat-display">حيا الله بيك..</div>
@@ -81,7 +63,6 @@
     <script>
         const GROQ_API = "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";
         let currentUser = null;
-        let audioContextUnlocked = false;
 
         window.onload = function() {
             const saved = localStorage.getItem('ameen_ai_session');
@@ -93,20 +74,10 @@
             }
         };
 
-        // دالة لفتح قفل الصوت لجميع الأجهزة (خصوصاً الآيفون)
-        function unlockAudio() {
-            if (!audioContextUnlocked) {
-                const msg = new SpeechSynthesisUtterance('');
-                window.speechSynthesis.speak(msg);
-                audioContextUnlocked = true;
-            }
-        }
-
         function registerUser() {
-            unlockAudio(); // تفعيل محرك الصوت بلمسة الدخول
             const name = document.getElementById('user-name-input').value;
-            if (!name || name.trim() === "") return alert("الرجاء كتابة اسمك");
-            currentUser = { name: name.trim(), avatar: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
+            if (!name) return alert("سجل اسمك يا بطل");
+            currentUser = { name: name };
             localStorage.setItem('ameen_ai_session', JSON.stringify(currentUser));
             loadApp(false);
         }
@@ -115,70 +86,51 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
             document.getElementById('profile-header').style.display = 'flex';
-            document.getElementById('ham-icon').style.display = 'block';
             document.getElementById('profile-name').innerText = currentUser.name;
-            document.getElementById('profile-pic').src = currentUser.avatar;
 
-            const welcome = `يا هلا والله فيك يا ${currentUser.name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. كيف أقدر أساعدك اليوم؟`;
+            const welcome = `يا هلا والله فيك يا ${currentUser.name}، أنا سارة ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. أبشر بسعدك، كيف أقدر أساعدك؟`;
             document.getElementById('chat-display').innerText = welcome;
-            if(!isAuto) speakImmediate(welcome);
+            
+            // التحدث فور الدخول لضمان تفعيل محرك الصوت
+            speakNow(welcome);
         }
 
-        function speakImmediate(text) {
-            window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(text);
-            
-            // ضبط الصوت للغة العربية السعودية
-            const voices = window.speechSynthesis.getVoices();
-            const saudiVoice = voices.find(v => v.lang === 'ar-SA' || v.lang.includes('ar_SA'));
-            if (saudiVoice) msg.voice = saudiVoice;
-            
-            msg.lang = 'ar-SA';
-            msg.pitch = 1.1;
-            msg.rate = 1.0;
-
+        function speakNow(text) {
             document.getElementById('robot-frame').classList.add('speaking');
-            msg.onend = () => document.getElementById('robot-frame').classList.remove('speaking');
             
-            // محاولة التشغيل مع معالجة أخطاء الأجهزة
-            try {
-                window.speechSynthesis.speak(msg);
-            } catch (e) {
-                console.log("Audio play blocked");
-            }
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('ameen_ai_session');
-            location.reload();
-        }
-
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        
-        function handleRobotClick() { 
-            unlockAudio(); // التأكد من فتح الصوت عند كل ضغطة
-            window.speechSynthesis.cancel(); 
-            startListening(); 
+            // استخدام ResponsiveVoice لضمان العمل على الآيباد وجميع الأجهزة
+            responsiveVoice.speak(text, "Arabic Female", {
+                pitch: 1,
+                rate: 1,
+                onend: function() {
+                    document.getElementById('robot-frame').classList.remove('speaking');
+                }
+            });
         }
 
         function startListening() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("المتصفح لا يدعم التعرف على الصوت");
+            if(!Speech) return alert("جهازك لا يدعم المايك");
+            
             const recognition = new Speech();
             recognition.lang = 'ar-SA';
-            recognition.onstart = () => { 
-                document.getElementById('status-text').innerText = "الحالة: أسمعك.. تفضل 🎙️";
+            
+            recognition.onstart = () => {
+                responsiveVoice.cancel(); // إيقاف أي صوت شغال قبل الاستماع
+                document.getElementById('status-text').innerText = "الحالة: أسمعك الآن..";
             };
+
             recognition.onresult = async (e) => {
                 const query = e.results[0][0].transcript;
                 document.getElementById('chat-display').innerText = "أنت: " + query;
                 await getAI(query);
             };
+            
             recognition.start();
         }
 
         async function getAI(q) {
-            document.getElementById('status-text').innerText = "سارة تفكر...";
+            document.getElementById('status-text').innerText = "جاري التفكير...";
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
@@ -187,16 +139,18 @@
                         model: "llama-3.3-70b-versatile",
                         messages: [{ 
                             role: "system", 
-                            content: `أنتِ سارة، ذكاء اصطناعي مطور من قبل أمين هارون الزواحي. المستخدم هو ${currentUser.name}. تحدثي بلهجة بيضاء مفهومة تميل للخليج والسعودية.` 
+                            content: `أنتِ سارة، ذكاء اصطناعي مطور من قبل أمين هارون الزواحي. المستخدم هو ${currentUser.name}. تحدثي بلهجة سعودية خليجية واضحة.` 
                         }, { role: "user", content: q }]
                     })
                 });
                 const data = await res.json();
                 const reply = data.choices[0].message.content;
                 document.getElementById('chat-display').innerText = reply;
-                speakImmediate(reply);
+                speakNow(reply);
                 document.getElementById('status-text').innerText = "جاهزة لسماعك";
-            } catch (e) { document.getElementById('status-text').innerText = "خطأ في الاتصال"; }
+            } catch (e) { 
+                document.getElementById('status-text').innerText = "خطأ في الشبكة"; 
+            }
         }
     </script>
 </body>
