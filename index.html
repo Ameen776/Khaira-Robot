@@ -5,36 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>مختبر المطور أمين هارون الزواحي</title>
-    <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+    <meta name="description" content="نظام ذكاء اصطناعي متطور للمطور أمين هارون الزواحي">
     <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
+    <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+    <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_FREE_KEY"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --neon: #00ffcc; --bg: #02050a; --panel: rgba(0, 15, 30, 0.95); --text: white; }
         .light-mode { --bg: #f0f2f5; --panel: rgba(255, 255, 255, 0.95); --text: #111; --neon: #0077ff; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-        #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; }
-        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: white; text-align: center; margin-bottom: 15px; }
-        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* شاشة الدخول */
+        #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000 url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg') center/cover; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon); text-align: center; width: 85%; max-width: 400px; }
+        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(0,0,0,0.7); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; }
+        .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; box-shadow: 0 0 15px var(--neon); }
 
-        .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 50px; border: 1px solid var(--neon); }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        /* الهيدر والملف الشخصي */
+        .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 50px; border: 1px solid var(--neon); }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon); object-fit: cover; }
 
+        /* قائمة الهمبرجر */
+        .hamburger { position: fixed; top: 15px; left: 15px; z-index: 1600; cursor: pointer; font-size: 2rem; color: var(--neon); display: none; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 1550; padding: 70px 20px; transition: 0.4s; }
+        .sidebar.active { left: 0; }
+        .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
+        /* التطبيق الرئيسي */
         #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; }
-        .robot-frame { width: 250px; height: 250px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 20px var(--neon); overflow: hidden; cursor: pointer; }
+        .robot-frame { width: 260px; height: 260px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; position: relative; }
         .robot-img { width: 100%; height: 100%; object-fit: cover; }
-        
-        #chat-display { width: 90%; max-width: 500px; text-align: center; background: var(--panel); padding: 20px; border-radius: 15px; border: 1px solid var(--neon); min-height: 80px; }
-        .status-tag { color: var(--neon); font-size: 0.8rem; font-weight: bold; margin-top: 10px; }
-        
-        .speaking { animation: pulse 0.5s infinite alternate; }
+        .speaking { animation: pulse 0.4s infinite alternate; border-color: #fff; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        #chat-display { width: 90%; max-width: 500px; text-align: center; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); min-height: 90px; color: #fff; }
+        .status-tag { color: var(--neon); font-size: 0.85rem; font-weight: bold; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -43,41 +52,46 @@
         <div class="login-box">
             <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
             <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
-            <button class="enter-btn" onclick="registerUser()">دخول النظام</button>
+            <button class="enter-btn" onclick="registerUser()">دخول النظام الملكي</button>
         </div>
     </div>
 
     <div class="user-profile-header" id="profile-header">
         <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="user-avatar" id="profile-pic">
-        <span id="profile-name" style="font-size: 0.8rem;"></span>
+        <span id="profile-name" style="font-size: 0.8rem; color: var(--neon);"></span>
+    </div>
+
+    <div class="hamburger" id="ham-icon" onclick="toggleMenu()">☰</div>
+    <div class="sidebar" id="sidebar">
+        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">🌗 وضع النهار/الليل</button>
+        <button class="side-btn" style="background:#ff4444; color:white;" onclick="logoutUser()">🚪 تسجيل الخروج</button>
     </div>
 
     <div id="main-app">
-        <div class="robot-frame" id="robot-frame" onclick="startListening()">
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="bot-pic" class="robot-img">
+        <div class="robot-frame" id="robot-frame" onclick="handleRobotClick()">
+            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img">
         </div>
-        <div id="chat-display">حيا الله بيك..</div>
-        <div class="status-tag" id="status-text">اضغط على الصورة للتحدث</div>
+        <div id="chat-display">حيا الله بيك.. سجل دخولك وابشر</div>
+        <div class="status-tag" id="status-text">اضغط على صورة الروبوت للتحدث</div>
     </div>
 
     <script>
         const GROQ_API = "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";
         let currentUser = null;
+        let isSpeaking = false;
 
         window.onload = function() {
             const saved = localStorage.getItem('ameen_ai_session');
             if (saved) {
                 currentUser = JSON.parse(saved);
                 loadApp(true);
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
             }
         };
 
         function registerUser() {
             const name = document.getElementById('user-name-input').value;
-            if (!name) return alert("سجل اسمك يا بطل");
-            currentUser = { name: name };
+            if (!name || name.trim() === "") return alert("سجل اسمك أولاً يا بطل");
+            currentUser = { name: name.trim() };
             localStorage.setItem('ameen_ai_session', JSON.stringify(currentUser));
             loadApp(false);
         }
@@ -86,72 +100,112 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
             document.getElementById('profile-header').style.display = 'flex';
+            document.getElementById('ham-icon').style.display = 'block';
             document.getElementById('profile-name').innerText = currentUser.name;
 
-            const welcome = `يا هلا والله فيك يا ${currentUser.name}، أنا سارة ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. أبشر بسعدك، كيف أقدر أساعدك؟`;
+            const welcome = `يا هلا والله فيك يا ${currentUser.name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. كيف أقدر أساعدك؟`;
             document.getElementById('chat-display').innerText = welcome;
-            
-            // التحدث فور الدخول لضمان تفعيل محرك الصوت
-            speakNow(welcome);
+            if(!isAuto) speak(welcome);
         }
 
-        function speakNow(text) {
-            document.getElementById('robot-frame').classList.add('speaking');
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
             
-            // استخدام ResponsiveVoice لضمان العمل على الآيباد وجميع الأجهزة
-            responsiveVoice.speak(text, "Arabic Female", {
-                pitch: 1,
-                rate: 1,
-                onend: function() {
-                    document.getElementById('robot-frame').classList.remove('speaking');
-                }
-            });
+            // حل مشكلة الأصوات في جميع الأجهزة
+            let voices = window.speechSynthesis.getVoices();
+            msg.voice = voices.find(v => v.lang.includes('ar-SA')) || voices.find(v => v.lang.includes('ar'));
+            msg.lang = 'ar-SA';
+            msg.rate = 0.9;
+            msg.pitch = 1;
+
+            msg.onstart = () => {
+                isSpeaking = true;
+                document.getElementById('robot-frame').classList.add('speaking');
+            };
+            msg.onend = () => {
+                isSpeaking = false;
+                document.getElementById('robot-frame').classList.remove('speaking');
+            };
+
+            window.speechSynthesis.speak(msg);
+
+            // خدعة للآيفون والآيباد: تكرار المحاولة إذا تم الحظر
+            if (window.speechSynthesis.speaking === false && text !== "") {
+                setTimeout(() => window.speechSynthesis.speak(msg), 100);
+            }
+        }
+
+        function handleRobotClick() {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                document.getElementById('robot-frame').classList.remove('speaking');
+            } else {
+                startListening();
+            }
         }
 
         function startListening() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("جهازك لا يدعم المايك");
+            if(!Speech) return alert("المتصفح لا يدعم الميكروفون");
             
             const recognition = new Speech();
             recognition.lang = 'ar-SA';
             
             recognition.onstart = () => {
-                responsiveVoice.cancel(); // إيقاف أي صوت شغال قبل الاستماع
-                document.getElementById('status-text').innerText = "الحالة: أسمعك الآن..";
+                document.getElementById('status-text').innerText = "الحالة: أسمعك الآن.. تفضل 🎙️";
             };
 
-            recognition.onresult = async (e) => {
-                const query = e.results[0][0].transcript;
+            recognition.onresult = async (event) => {
+                const query = event.results[0][0].transcript;
                 document.getElementById('chat-display').innerText = "أنت: " + query;
                 await getAI(query);
             };
-            
+
+            recognition.onerror = () => {
+                document.getElementById('status-text').innerText = "خطأ: حاول مرة أخرى";
+            };
+
             recognition.start();
         }
 
         async function getAI(q) {
-            document.getElementById('status-text').innerText = "جاري التفكير...";
+            document.getElementById('status-text').innerText = "سارة تفكر في الرد...";
             try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API}` },
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "Authorization": `Bearer ${GROQ_API}` 
+                    },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ 
-                            role: "system", 
-                            content: `أنتِ سارة، ذكاء اصطناعي مطور من قبل أمين هارون الزواحي. المستخدم هو ${currentUser.name}. تحدثي بلهجة سعودية خليجية واضحة.` 
-                        }, { role: "user", content: q }]
+                        messages: [
+                            { role: "system", content: `أنتِ سارة، ذكاء اصطناعي يمني/خليجي مطور من قبل أمين هارون الزواحي. تنادي المستخدم بـ ${currentUser.name}.` },
+                            { role: "user", content: q }
+                        ]
                     })
                 });
-                const data = await res.json();
-                const reply = data.choices[0].message.content;
-                document.getElementById('chat-display').innerText = reply;
-                speakNow(reply);
-                document.getElementById('status-text').innerText = "جاهزة لسماعك";
-            } catch (e) { 
-                document.getElementById('status-text').innerText = "خطأ في الشبكة"; 
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    const reply = data.choices[0].message.content;
+                    document.getElementById('chat-display').innerText = reply;
+                    speak(reply);
+                    document.getElementById('status-text').innerText = "جاهزة لسماعك (اضغط الصورة)";
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                document.getElementById('status-text').innerText = "خطأ بالشبكة: تأكد من النت";
             }
         }
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+        function logoutUser() { localStorage.removeItem('ameen_ai_session'); location.reload(); }
+
+        // تحميل الأصوات مسبقاً لضمان عملها فوراً
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
     </script>
 </body>
 </html>
