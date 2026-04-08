@@ -24,20 +24,18 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-        /* شاشة الدخول */
         #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000 url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg') center/cover; display: none; align-items: center; justify-content: center; }
         .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon); text-align: center; width: 85%; max-width: 400px; }
         input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; outline: none; }
         .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; }
 
-        /* الملف الشخصي الدائري */
         .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 4px 10px 4px 5px; border-radius: 50px; border: 1px solid var(--neon); cursor: pointer; }
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon); object-fit: cover; }
         .user-name-display { font-weight: bold; font-size: 0.8rem; color: var(--neon); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; position: relative; }
         .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--neon) 1px, transparent 1px), linear-gradient(90deg, var(--neon) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(600px) rotateX(60deg); bottom: -30%; opacity: 0.1; z-index: -1; }
-        .robot-frame { width: 65vw; height: 65vw; max-width: 280px; max-height: 280px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; }
+        .robot-frame { width: 65vw; height: 65vw; max-width: 280px; max-height: 280px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
         .robot-img { width: 100%; height: 100%; object-fit: cover; }
         .speaking { animation: pulse 0.4s infinite alternate; border-color: #fff; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
@@ -83,6 +81,7 @@
     <script>
         const GROQ_API = "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";
         let currentUser = null;
+        let audioContextUnlocked = false;
 
         window.onload = function() {
             const saved = localStorage.getItem('ameen_ai_session');
@@ -94,7 +93,17 @@
             }
         };
 
+        // دالة لفتح قفل الصوت لجميع الأجهزة (خصوصاً الآيفون)
+        function unlockAudio() {
+            if (!audioContextUnlocked) {
+                const msg = new SpeechSynthesisUtterance('');
+                window.speechSynthesis.speak(msg);
+                audioContextUnlocked = true;
+            }
+        }
+
         function registerUser() {
+            unlockAudio(); // تفعيل محرك الصوت بلمسة الدخول
             const name = document.getElementById('user-name-input').value;
             if (!name || name.trim() === "") return alert("الرجاء كتابة اسمك");
             currentUser = { name: name.trim(), avatar: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
@@ -110,48 +119,55 @@
             document.getElementById('profile-name').innerText = currentUser.name;
             document.getElementById('profile-pic').src = currentUser.avatar;
 
-            const welcome = `حيا الله بيك يا ${currentUser.name}، أنا سارة ذكاء اصطناعي، طورني المبرمج القوي أمين الزواحي، أيش أخدمك به اليوم؟`;
+            const welcome = `يا هلا والله فيك يا ${currentUser.name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. كيف أقدر أساعدك اليوم؟`;
             document.getElementById('chat-display').innerText = welcome;
             if(!isAuto) speakImmediate(welcome);
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('ameen_ai_session'); // مسح البيانات المخزنة
-            location.reload(); // إعادة تحميل الصفحة لإظهار شاشة الدخول
         }
 
         function speakImmediate(text) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
+            
+            // ضبط الصوت للغة العربية السعودية
+            const voices = window.speechSynthesis.getVoices();
+            const saudiVoice = voices.find(v => v.lang === 'ar-SA' || v.lang.includes('ar_SA'));
+            if (saudiVoice) msg.voice = saudiVoice;
+            
             msg.lang = 'ar-SA';
+            msg.pitch = 1.1;
+            msg.rate = 1.0;
+
             document.getElementById('robot-frame').classList.add('speaking');
             msg.onend = () => document.getElementById('robot-frame').classList.remove('speaking');
-            window.speechSynthesis.speak(msg);
-        }
-
-        function uploadImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    currentUser.avatar = e.target.result;
-                    localStorage.setItem('ameen_ai_session', JSON.stringify(currentUser));
-                    document.getElementById('profile-pic').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+            
+            // محاولة التشغيل مع معالجة أخطاء الأجهزة
+            try {
+                window.speechSynthesis.speak(msg);
+            } catch (e) {
+                console.log("Audio play blocked");
             }
         }
 
+        function logoutUser() {
+            localStorage.removeItem('ameen_ai_session');
+            location.reload();
+        }
+
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        function handleRobotClick() { window.speechSynthesis.cancel(); startListening(); }
+        
+        function handleRobotClick() { 
+            unlockAudio(); // التأكد من فتح الصوت عند كل ضغطة
+            window.speechSynthesis.cancel(); 
+            startListening(); 
+        }
 
         function startListening() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("المتصفح لا يدعم الصوت");
+            if(!Speech) return alert("المتصفح لا يدعم التعرف على الصوت");
             const recognition = new Speech();
-            recognition.lang = 'ar-YE';
+            recognition.lang = 'ar-SA';
             recognition.onstart = () => { 
-                document.getElementById('status-text').innerText = "الحالة: أسمعك.. اتكلم 🎙️";
+                document.getElementById('status-text').innerText = "الحالة: أسمعك.. تفضل 🎙️";
             };
             recognition.onresult = async (e) => {
                 const query = e.results[0][0].transcript;
@@ -171,7 +187,7 @@
                         model: "llama-3.3-70b-versatile",
                         messages: [{ 
                             role: "system", 
-                            content: `أنتِ سارة، ذكاء اصطناعي يمني. المستخدم هو ${currentUser.name}. مطورك هو أمين هارون الزواحي. تحدثي باللهجة اليمنية فقط.` 
+                            content: `أنتِ سارة، ذكاء اصطناعي مطور من قبل أمين هارون الزواحي. المستخدم هو ${currentUser.name}. تحدثي بلهجة بيضاء مفهومة تميل للخليج والسعودية.` 
                         }, { role: "user", content: q }]
                     })
                 });
@@ -179,8 +195,8 @@
                 const reply = data.choices[0].message.content;
                 document.getElementById('chat-display').innerText = reply;
                 speakImmediate(reply);
-                document.getElementById('status-text').innerText = "اضغط للتحدث مرة أخرى";
-            } catch (e) { document.getElementById('status-text').innerText = "خطأ في الشبكة"; }
+                document.getElementById('status-text').innerText = "جاهزة لسماعك";
+            } catch (e) { document.getElementById('status-text').innerText = "خطأ في الاتصال"; }
         }
     </script>
 </body>
