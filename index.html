@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" itemscope itemtype="http://schema.org/WebPage">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>سارة الذكية - تطوير أمين الزواحي</title>
+    <meta name="description" content="ذكاء اصطناعي باللهجة اليمنية - تطوير المبرمج أمين الزواحي">
+
+    <meta itemprop="name" content="سارة الذكية | أمين الزواحي">
+    <meta itemprop="description" content="المساعد الذكي المطور بواسطة أمين هارون الزواحي">
+    <meta itemprop="image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+
+    <meta property="og:url" content="https://ameen-ai.com"> <meta property="og:type" content="website">
     <meta property="og:title" content="سارة الذكية | أمين الزواحي">
-    <meta property="og:description" content="ذكاء اصطناعي باللهجة اليمنية - تطوير المبرمج أمين الزواحي">
+    <meta property="og:description" content="حيا الله بيك في نظام سارة المطور من قبل أمين الزواحي">
     <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
     <meta property="og:image:secure_url" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:url" content="https://ameen-ai.com"> <meta property="og:type" content="website">
-    
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="سارة الذكية | أمين الزواحي">
+    <meta name="twitter:description" content="تطوير المبرمج أمين الزواحي">
+    <meta name="twitter:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+
     <link rel="icon" type="image/png" href="https://i.ibb.co/LX81sqyP/1775595508106c.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/LX81sqyP/1775595508106c.png">
 
@@ -22,13 +35,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         
-        /* شاشة الدخول */
         #login-screen { position: fixed; inset: 0; z-index: 2000; background: #000 url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg') center/cover; display: none; align-items: center; justify-content: center; }
         .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); box-shadow: 0 0 30px var(--neon); text-align: center; width: 85%; max-width: 400px; }
         input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; outline: none; }
         .enter-btn { background: var(--neon); color: black; padding: 15px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; }
         
-        /* الملف الشخصي الدائري في الزاوية */
         .user-profile-header { position: fixed; top: 15px; right: 15px; z-index: 1600; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 4px 10px 4px 5px; border-radius: 50px; border: 1px solid var(--neon); cursor: pointer; }
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon); object-fit: cover; }
         .user-name-display { font-weight: bold; font-size: 0.8rem; color: var(--neon); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
