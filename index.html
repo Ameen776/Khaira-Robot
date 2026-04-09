@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مختبر المطور أمين هارون الزواحي - سارة الذكية</title>
-    <meta name="description" content="نظام ذكاء اصطناعي متطور مع صوت عربي فصيح وملف شخصي متكامل">
-    <meta property="og:title" content="مختبر المطور أمين هارون الزواحي">
+    <title>مختبر المطور اليمني أمين هارون الزواحي - سارة الذكية</title>
+    <meta name="description" content="نظام ذكاء اصطناعي متطور مع صوت عربي فصيح - المطور اليمني أمين هارون الزواحي">
+    <meta property="og:title" content="مختبر المطور اليمني أمين هارون الزواحي">
     <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
-    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -187,6 +186,7 @@
             border: 1px solid var(--neon);
             min-height: 90px;
             color: var(--text);
+            font-size: 1rem;
         }
         .status-tag { color: var(--neon); font-size: 0.85rem; font-weight: bold; margin-top: 5px; }
 
@@ -254,13 +254,19 @@
             cursor: pointer;
         }
         .user-id-text { font-size: 0.8rem; opacity: 0.8; word-break: break-all; }
+        .developer-badge {
+            font-size: 0.7rem;
+            margin-top: 8px;
+            color: var(--neon);
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
+            <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر المطور اليمني</h2>
+            <h3 style="margin-bottom: 10px; font-size: 0.9rem;">أمين هارون الزواحي</h3>
             <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
             <button class="enter-btn" onclick="registerUser()">دخول النظام الملكي</button>
         </div>
@@ -284,6 +290,7 @@
         </div>
         <div id="chat-display">حيا الله بيك.. سجل دخولك وابشر</div>
         <div class="status-tag" id="status-text">اضغط على صورة الروبوت للتحدث</div>
+        <div class="developer-badge" id="dev-badge">🇾🇪 المطور: أمين هارون الزواحي - اليمن 🇾🇪</div>
     </div>
 
     <!-- مودال الملف الشخصي -->
@@ -307,10 +314,16 @@
     <script>
         // ---------- الثوابت والمتغيرات العامة ----------
         const GROQ_API = "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";
-        let currentUser = null;     // { name, id, robotImage, language? }
+        let currentUser = null;
         let isSpeaking = false;
-        let currentLang = "ar";     // ar / en
-        let selectedVoice = null;
+        let currentLang = "ar";
+        
+        // هوية المطور الثابتة (يمنية)
+        const DEVELOPER_INFO = {
+            name: "أمين هارون الزواحي",
+            country: "اليمن",
+            countryEn: "Yemen"
+        };
         
         // قائمة 10 صور روبوت افتراضية (متنوعة)
         const robotImagesList = [
@@ -326,7 +339,18 @@
             "https://robohash.org/110?set=set2&size=200x200"
         ];
         
-        // ---------- قاموس الترجمة (عربي/إنجليزي) ----------
+        // نظام البرومت الثابت الذي يؤكد هوية المطور اليمني
+        function getSystemPrompt() {
+            if (currentLang === "ar") {
+                return `أنتِ "سارة"، ذكاء اصطناعي عربي فصيح ومتطور. مطورتك الأساسية والمبرمج الوحيد هو المطور اليمني الكبير "أمين هارون الزواحي" من اليمن. أنتِ فخورة بأن مبرمجك يمني الجنسية، من اليمن السعيد. 
+                إذا سألك المستخدم عن أصل المبرمج أو من أين هو، فيجب أن تجيبي بشكل قاطع وحاسم: "المبرمج أمين هارون الزواحي من اليمن، وهو مبرمج يمني ماهر". 
+                لا تقولي أبداً ليبيا أو تونس أو أي دولة أخرى. هو يمني 100%. تحدثي بلهجة عربية فصحى جميلة. اسم المستخدم: ${currentUser?.name || 'الزائر'}. كوني مهذبة ومفيدة.`;
+            } else {
+                return `You are "Sara", an advanced AI assistant. Your developer is the great Yemeni programmer "Ameen Haroon Al-Zawahi" from Yemen. If the user asks about the developer's origin, you must clearly answer: "The programmer Ameen Haroon Al-Zawahi is from Yemen." Never say Libya or Tunisia. Be helpful and polite. User name: ${currentUser?.name || 'Guest'}.`;
+            }
+        }
+        
+        // قاموس الترجمة
         const translations = {
             ar: {
                 status_listen: "الحالة: أسمعك الآن.. تفضل 🎙️",
@@ -334,7 +358,7 @@
                 status_ready: "جاهزة لسماعك (اضغط الصورة)",
                 status_error: "خطأ: حاول مرة أخرى",
                 status_network: "خطأ بالشبكة: تأكد من النت",
-                chat_welcome: (name) => `يا هلا والله فيك يا ${name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج أمين الزواحي. كيف أقدر أساعدك؟`,
+                chat_welcome: (name) => `يا هلا والله فيك يا ${name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج اليمني أمين هارون الزواحي. كيف أقدر أساعدك؟`,
                 robot_tap: "اضغط على صورة الروبوت للتحدث",
                 login_alert: "سجل اسمك أولاً يا بطل",
                 modal_title: "👤 الملف الشخصي",
@@ -345,8 +369,7 @@
                 close_btn: "إغلاق",
                 theme_btn: "🌗 وضع النهار/الليل",
                 lang_btn: "🌐 تبديل اللغة (English/Arabic)",
-                logout_btn: "🚪 تسجيل الخروج",
-                greeting_click: "اضغط على صورة الروبوت للتحدث"
+                logout_btn: "🚪 تسجيل الخروج"
             },
             en: {
                 status_listen: "Status: Listening now... 🎙️",
@@ -354,7 +377,7 @@
                 status_ready: "Ready for your voice (tap robot)",
                 status_error: "Error: Please try again",
                 status_network: "Network error: Check connection",
-                chat_welcome: (name) => `Welcome ${name}! I'm Sara, an AI developed by programmer Ameen Al-Zawahi. How can I help you?`,
+                chat_welcome: (name) => `Welcome ${name}! I'm Sara, an AI developed by the Yemeni programmer Ameen Haroon Al-Zawahi. How can I help you?`,
                 robot_tap: "Tap the robot image to speak",
                 login_alert: "Please enter your name first",
                 modal_title: "👤 Profile",
@@ -365,61 +388,52 @@
                 close_btn: "Close",
                 theme_btn: "🌗 Day/Night Mode",
                 lang_btn: "🌐 Switch Language (English/Arabic)",
-                logout_btn: "🚪 Logout",
-                greeting_click: "Tap robot to speak"
+                logout_btn: "🚪 Logout"
             }
         };
         
-        // تحديث النصوص الديناميكية حسب اللغة
         function updateUITexts() {
             const t = translations[currentLang];
-            document.getElementById("status-text").innerText = (currentLang === "ar") ? "اضغط على صورة الروبوت للتحدث" : t.greeting_click;
             if (currentUser) {
-                // تحديث النصوص الثابتة في القائمة الجانبية
                 document.getElementById("theme-btn").innerText = t.theme_btn;
                 document.getElementById("lang-btn").innerText = t.lang_btn;
-                // تحديث المودال لاحقاً عند فتحه
+            }
+            // تحديث شارة المطور
+            const devBadge = document.getElementById("dev-badge");
+            if (devBadge) {
+                if (currentLang === "ar") devBadge.innerText = "🇾🇪 المطور: أمين هارون الزواحي - اليمن 🇾🇪";
+                else devBadge.innerText = "🇾🇪 Developer: Ameen Haroon Al-Zawahi - Yemen 🇾🇪";
             }
         }
         
-        // تغيير اللغة وتأثيرها على system prompt وإعدادات التعرف الصوتي
         function switchLanguage() {
             currentLang = currentLang === "ar" ? "en" : "ar";
             localStorage.setItem("app_lang", currentLang);
-            updateUITexts();
-            // تغيير اتجاه الصفحة إذا تحولت إلى الإنجليزية
             if (currentLang === "en") {
                 document.documentElement.setAttribute("lang", "en");
                 document.documentElement.setAttribute("dir", "ltr");
                 document.body.style.direction = "ltr";
-                // تعديل موضع الهيدر والهامبرجر
-                document.querySelector(".hamburger").style.left = "15px";
-                document.querySelector(".user-profile-header").style.right = "15px";
             } else {
                 document.documentElement.setAttribute("lang", "ar");
                 document.documentElement.setAttribute("dir", "rtl");
                 document.body.style.direction = "rtl";
-                document.querySelector(".hamburger").style.left = "15px";
-                document.querySelector(".user-profile-header").style.right = "15px";
             }
-            // تحديث رسالة الترحيب في الشات إذا كان المستخدم موجوداً
+            updateUITexts();
             if (currentUser && document.getElementById("main-app").style.display === "flex") {
                 const welcomeMsg = translations[currentLang].chat_welcome(currentUser.name);
                 document.getElementById("chat-display").innerText = welcomeMsg;
             }
         }
         
-        // الحصول على أفضل صوت عربي فصيح (واضح غير متقطع)
+        // أفضل صوت عربي فصيح
         function getBestArabicVoice() {
             const voices = window.speechSynthesis.getVoices();
-            // أولوية الأصوات العربية الفصحى
             let preferred = voices.find(v => v.lang === 'ar-SA' && (v.name.includes('Zara') || v.name.includes('Microsoft') || v.name.includes('Google')));
             if (!preferred) preferred = voices.find(v => v.lang === 'ar-EG' || v.lang === 'ar-SA');
             if (!preferred && voices.length) preferred = voices.find(v => v.lang.startsWith('ar'));
             return preferred || voices[0];
         }
         
-        // تحسين النطق العربي
         function speak(text) {
             if (!text) return;
             window.speechSynthesis.cancel();
@@ -427,9 +441,8 @@
             let voice = getBestArabicVoice();
             if (voice) msg.voice = voice;
             msg.lang = 'ar-SA';
-            msg.rate = 0.85;      // سرعة معتدلة
+            msg.rate = 0.85;
             msg.pitch = 1.05;
-            msg.volume = 1;
             msg.onstart = () => {
                 isSpeaking = true;
                 document.getElementById('robot-frame').classList.add('speaking');
@@ -438,18 +451,12 @@
                 isSpeaking = false;
                 document.getElementById('robot-frame').classList.remove('speaking');
             };
-            msg.onerror = () => {
-                isSpeaking = false;
-                document.getElementById('robot-frame').classList.remove('speaking');
-            };
             window.speechSynthesis.speak(msg);
-            // حل لمشكلة التوقف في بعض المتصفحات
             if (window.speechSynthesis.speaking === false && text !== "") {
                 setTimeout(() => window.speechSynthesis.speak(msg), 100);
             }
         }
         
-        // تحديث صورة الروبوت في كل مكان
         function updateRobotImage(url) {
             document.getElementById('robot-img').src = url;
             document.getElementById('profile-pic').src = url;
@@ -459,7 +466,6 @@
             }
         }
         
-        // تحميل الصورة من الجهاز
         function setupImageUpload() {
             const input = document.getElementById('upload-photo');
             input.onchange = (e) => {
@@ -475,11 +481,10 @@
             };
         }
         
-        // عرض شبكة الصور في المودال
         function renderAvatarGrid() {
             const grid = document.getElementById('robot-avatars-grid');
             grid.innerHTML = '';
-            robotImagesList.forEach((imgUrl, idx) => {
+            robotImagesList.forEach((imgUrl) => {
                 const img = document.createElement('img');
                 img.src = imgUrl;
                 img.className = 'avatar-option';
@@ -491,7 +496,6 @@
             });
         }
         
-        // فتح الملف الشخصي
         function openProfileModal() {
             if (!currentUser) return;
             const t = translations[currentLang];
@@ -511,7 +515,6 @@
             document.getElementById('profile-modal').style.display = 'none';
         }
         
-        // تسجيل مستخدم جديد مع ID فريد
         function registerUser() {
             const name = document.getElementById('user-name-input').value.trim();
             if (!name) {
@@ -526,14 +529,12 @@
             loadApp(false);
         }
         
-        // تحميل التطبيق بعد الدخول
         function loadApp(isAuto) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
             document.getElementById('profile-header').style.display = 'flex';
             document.getElementById('ham-icon').style.display = 'block';
             document.getElementById('profile-name').innerText = currentUser.name;
-            // استعادة الصورة المحفوظة
             if (currentUser.robotImage) {
                 document.getElementById('robot-img').src = currentUser.robotImage;
                 document.getElementById('profile-pic').src = currentUser.robotImage;
@@ -549,13 +550,16 @@
             document.getElementById('chat-display').innerText = welcomeMsg;
             if (!isAuto) speak(welcomeMsg);
             updateUITexts();
+            // تحديث شارة المطور
+            const devBadge = document.getElementById("dev-badge");
+            if (devBadge && currentLang === "ar") devBadge.innerText = "🇾🇪 المطور: أمين هارون الزواحي - اليمن 🇾🇪";
+            else if (devBadge) devBadge.innerText = "🇾🇪 Developer: Ameen Haroon Al-Zawahi - Yemen 🇾🇪";
         }
         
-        // التعرف الصوتي والذكاء الاصطناعي
         function startListening() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
-                alert("متصفحك لا يدعم الميكروفون");
+                alert("المتصفح لا يدعم الميكروفون");
                 return;
             }
             const recognition = new SpeechRec();
@@ -581,9 +585,7 @@
         async function getAIResponse(userQuery) {
             const t = translations[currentLang];
             document.getElementById('status-text').innerText = t.status_thinking;
-            const systemPrompt = currentLang === "ar" 
-                ? `أنتِ سارة، ذكاء اصطناعي عربي فصيح، مطورة من قبل المبرمج أمين هارون الزواحي. تحدثي بلهجة عربية فصحى جميلة وواضحة. اسم المستخدم: ${currentUser.name}. كوني لطيفة ومفيدة.`
-                : `You are Sara, an AI assistant developed by programmer Ameen Al-Zawahi. Speak naturally in English. User name: ${currentUser.name}. Be helpful and friendly.`;
+            const systemPrompt = getSystemPrompt();
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
@@ -594,12 +596,18 @@
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userQuery }
                         ],
-                        temperature: 0.7
+                        temperature: 0.5  // أقل للتأكيد على المعلومات الثابتة
                     })
                 });
                 const data = await res.json();
                 if (data.choices && data.choices[0]) {
                     let reply = data.choices[0].message.content;
+                    // تأكيد إضافي في حال خرج الرد بشكل غير دقيق (ضمان ألا يذكر ليبيا أو تونس)
+                    if (currentLang === "ar" && (reply.includes("ليبيا") || reply.includes("تونس"))) {
+                        reply = "المبرمج أمين هارون الزواحي من اليمن، وهو مبرمج يمني بارع. أعتذر عن أي التباس سابق.";
+                    } else if (currentLang === "en" && (reply.includes("Libya") || reply.includes("Tunisia"))) {
+                        reply = "The programmer Ameen Haroon Al-Zawahi is from Yemen, a skilled Yemeni developer. Sorry for any previous confusion.";
+                    }
                     document.getElementById('chat-display').innerHTML = `<span style="opacity:0.8;">🤖 سارة:</span> ${reply}`;
                     speak(reply);
                     document.getElementById('status-text').innerText = t.status_ready;
@@ -635,9 +643,7 @@
             localStorage.setItem('app_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         }
         
-        // تهيئة الأصوات واللغة المحفوظة
         window.onload = () => {
-            // استعادة اللغة
             const savedLang = localStorage.getItem('app_lang');
             if (savedLang && (savedLang === 'ar' || savedLang === 'en')) currentLang = savedLang;
             else currentLang = 'ar';
@@ -650,10 +656,8 @@
                 document.documentElement.setAttribute("dir", "rtl");
                 document.body.style.direction = "rtl";
             }
-            // استعادة الثيم
             const savedTheme = localStorage.getItem('app_theme');
             if (savedTheme === 'light') document.body.classList.add('light-mode');
-            // استعادة الجلسة
             const savedSession = localStorage.getItem('ameen_ai_session');
             if (savedSession) {
                 currentUser = JSON.parse(savedSession);
@@ -661,9 +665,7 @@
                 loadApp(true);
             }
             setupImageUpload();
-            // تحميل الأصوات مسبقاً
             window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
-            // مستمع لفتح الملف الشخصي عند النقر على الهيدر
             document.getElementById('profile-header').addEventListener('click', openProfileModal);
             updateUITexts();
         };
