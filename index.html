@@ -11,25 +11,36 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; transition: 0.3s; }
 
+        /* الهيدر العلوي */
         header { position: fixed; top: 0; left: 0; right: 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; display: none; }
         .hamburger { font-size: 2.2rem; color: var(--neon); cursor: pointer; }
-        .profile-btn { display: flex; align-items: center; gap: 10px; background: rgba(0,255,204,0.1); padding: 5px 15px; border-radius: 50px; border: 1.5px solid var(--neon); cursor: pointer; }
-        .profile-btn img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); }
+        .profile-trigger { display: flex; align-items: center; gap: 10px; background: rgba(0,255,204,0.1); padding: 5px 15px; border-radius: 50px; border: 1.5px solid var(--neon); cursor: pointer; }
+        .profile-trigger img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); }
 
+        /* القائمة الجانبية */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; text-align: right; }
+        .sidebar.active { left: 0; }
+        .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        select.lang-select { width: 100%; padding: 10px; border-radius: 10px; background: #000; color: var(--neon); border: 1px solid var(--neon); margin-bottom: 15px; }
+
+        /* شاشة الدخول */
         #login-screen { position: fixed; inset: 0; z-index: 3000; background: #000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; }
         .main-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 15px; }
 
-        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; }
-        .sidebar.active { left: 0; }
-        .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        /* معرض الشخصيات (داخل الملف الشخصي) */
+        #profile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .char-item { width: 100px; height: 100px; border-radius: 15px; border: 2px solid var(--neon); overflow: hidden; cursor: pointer; }
+        .char-item img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* الواجهة الرئيسية */
         main { height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-        .robot-node { width: 240px; height: 240px; border-radius: 50%; border: 5px solid var(--neon); box-shadow: 0 0 40px var(--neon); overflow: hidden; cursor: pointer; }
+        .robot-node { width: 230px; height: 230px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
         .speaking { animation: pulse 0.4s infinite alternate; border-color: gold; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
         
-        #chat-bubble { width: 90%; max-width: 500px; background: var(--panel); padding: 25px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 100px; }
+        #chat-bubble { width: 90%; max-width: 480px; background: var(--panel); padding: 25px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 100px; }
         footer { position: fixed; bottom: 20px; font-size: 0.8rem; color: var(--neon); text-align: center; width: 100%; }
     </style>
 </head>
@@ -38,76 +49,97 @@
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
-            <input type="text" id="name-field" class="main-input" placeholder="سجل اسمك يا بطل..">
-            <button class="side-btn" onclick="saveUser()">دخول النظام</button>
+            <input type="text" id="name-field" class="main-input" placeholder="سجل اسمك يا ملك..">
+            <button class="side-btn" onclick="initUser()">دخول النظام الملكي</button>
         </div>
     </div>
 
-    <header id="app-header">
+    <header id="main-header">
         <div class="hamburger" onclick="toggleSidebar()">☰</div>
-        <div class="profile-btn" onclick="location.reload()">
-            <span id="nav-name" style="font-weight: bold;">أمين</span>
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="nav-avatar">
+        <div class="profile-trigger" onclick="toggleProfile(true)">
+            <span id="display-name" style="font-weight: bold;">أمين</span>
+            <img id="display-avatar" src="https://i.ibb.co/FqbzKKDj/images-4.jpg">
         </div>
     </header>
 
     <div class="sidebar" id="sidebar">
-        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">وضع النهار/الليل</button>
-        <button class="side-btn" style="background:#ff4444; color:#fff;" onclick="logout()">تسجيل الخروج</button>
+        <p style="color:var(--neon); margin-bottom:10px;">اختر اللغة / Select Language</p>
+        <select class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="ar">العربية (Arabic)</option>
+            <option value="en">English (إنجليزي)</option>
+            <option value="fr">Français (فرنسي)</option>
+            <option value="tr">Türkçe (تركي)</option>
+            <option value="es">Español (إسباني)</option>
+        </select>
+        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">🌓 وضع النهار/الليل</button>
+        <button class="side-btn" style="background:#ff4444; color:#fff;" onclick="logout()">🚪 تسجيل الخروج</button>
     </div>
 
-    <main id="app-content">
+    <div id="profile-modal">
+        <h2 style="color:var(--neon)">تغيير شخصية الروبوت</h2>
+        <div class="char-grid">
+            <div class="char-item" onclick="updateBotImg('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
+            <div class="char-item" onclick="updateBotImg('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
+            <div class="char-item" onclick="updateBotImg('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg')"><img src="https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg"></div>
+            <div class="char-item" onclick="updateBotImg('https://i.ibb.co/LX81sqyP/1775595508106c.png')"><img src="https://i.ibb.co/LX81sqyP/1775595508106c.png"></div>
+        </div>
+        <button class="side-btn" style="width:120px; margin-top:30px;" onclick="toggleProfile(false)">إغلاق</button>
+    </div>
+
+    <main id="app-main">
         <div class="robot-node" id="r-node" onclick="startMic()">
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="main-bot-img" style="width:100%; height:100%; object-fit:cover;">
+            <img id="main-bot-img" src="https://i.ibb.co/FqbzKKDj/images-4.jpg" style="width:100%; height:100%; object-fit:cover;">
         </div>
         <div id="chat-bubble">بانتظارك..</div>
-        <div style="color: var(--neon); font-size: 0.8rem;" id="id-display">ID: 000000000</div>
+        <div id="uid-display" style="color:var(--neon); font-size:0.8rem; font-family:monospace;">ID: 000000000</div>
         <footer>المطور: أمين هارون الزواحي - اليمن 🇾🇪</footer>
     </main>
 
     <script>
         const API_KEY = "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";
-        let state = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
+        let user = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg", lang: "ar" };
 
         window.onload = () => {
-            const data = localStorage.getItem('ameen_pro_v8');
-            if(data) { state = JSON.parse(data); run(); }
+            const saved = localStorage.getItem('ameen_v10_final');
+            if(saved) { user = JSON.parse(saved); launch(); }
         };
 
-        function saveUser() {
+        function initUser() {
             const n = document.getElementById('name-field').value;
-            if(!n) return;
-            state.name = n;
-            state.id = Math.floor(100000000 + Math.random() * 900000000);
-            localStorage.setItem('ameen_pro_v8', JSON.stringify(state));
-            run(true);
+            if(!n) return alert("الرجاء كتابة الاسم");
+            user.name = n;
+            user.id = Math.floor(100000000 + Math.random() * 900000000);
+            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
+            launch(true);
         }
 
-        function run(isNew = false) {
+        function launch(isWelcome = false) {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-content').style.display = 'flex';
-            document.getElementById('app-header').style.display = 'flex';
-            document.getElementById('nav-name').innerText = state.name;
-            document.getElementById('id-display').innerText = "ID: " + state.id;
+            document.getElementById('app-main').style.display = 'flex';
+            document.getElementById('main-header').style.display = 'flex';
+            document.getElementById('display-name').innerText = user.name;
+            document.getElementById('uid-display').innerText = "ID: " + user.id;
+            document.getElementById('main-bot-img').src = user.bot;
+            document.getElementById('display-avatar').src = user.bot;
 
-            if(isNew) {
-                const welcome = `اهلا بك يا ${state.name}، اهلا بك بذكاء الاصطناعي، انا مبرمج من امين الزواحي ذكاء اصطناعي مبرمج من امين الزواحي، هل يمكنني مساعدتك؟`;
-                document.getElementById('chat-bubble').innerText = welcome;
-                talk(welcome);
+            if(isWelcome) {
+                const msg = `أهلاً بك يا ${user.name}.. أهلاً بك في نظام الذكاء الاصطناعي الخاص بمختبر الزواحي. أنا سارة، مبرمجة بواسطة المطور أمين الزواحي.. هل يمكنني مساعدتك؟`;
+                document.getElementById('chat-bubble').innerText = msg;
+                speak(msg);
             }
         }
 
-        function talk(t) {
+        function speak(text) {
             window.speechSynthesis.cancel();
-            const speech = new SpeechSynthesisUtterance(t);
-            speech.lang = 'ar-SA';
-            speech.rate = 1.0;
-            speech.onstart = () => document.getElementById('r-node').classList.add('speaking');
-            speech.onend = () => document.getElementById('r-node').classList.remove('speaking');
-            window.speechSynthesis.speak(speech);
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = user.lang === 'ar' ? 'ar-SA' : (user.lang === 'en' ? 'en-US' : user.lang);
+            msg.rate = 1.0;
+            msg.onstart = () => document.getElementById('r-node').classList.add('speaking');
+            msg.onend = () => document.getElementById('r-node').classList.remove('speaking');
+            window.speechSynthesis.speak(msg);
         }
 
-        async function fetchAI(q) {
+        async function askAI(query) {
             document.getElementById('chat-bubble').innerText = "...";
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -116,41 +148,51 @@
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
                         messages: [
-                            { role: "system", content: `
-                                اسمك سارة. مبرمجك هو أمين الزواحي. تاريخ إنشائك هو 10 أغسطس 2026.
-                                إذا سألك المستخدم "ما اسمك" رد بـ: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 8 شهر 10".
-                                إذا سألك المستخدم "من هو امين الزواحي" رد بـ: "هو مبرمجي الخاص، وهو الذي اوجدني الى هذا العالم، هو شخص مؤثر في الفيسبوك، ولديه حساب في الفيسبوك يمتلك اكثر من 15000 متابع، وهو لديه محتوى كوميدي، فهذا هو مبرمجي الخاص وانا فخور به".
-                                أجيبي دائماً بلهجة محترمة وبسيطة.
-                            `},
-                            { role: "user", content: q }
+                            { role: "system", content: `اسمك سارة. مبرمجك هو أمين الزواحي. تاريخ إنشائك 10 أغسطس 2026. 
+                            إذا سئلت عن اسمك: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 8 شهر 10".
+                            إذا سئلت عن أمين الزواحي: "هو مبرمجي الخاص، وهو الذي اوجدني الى هذا العالم، هو شخص مؤثر في الفيسبوك، ولديه حساب يمتلك اكثر من 15000 متابع، ولديه محتوى كوميدي، فخور به جداً".
+                            اللغة الحالية للمستخدم: ${user.lang}.` },
+                            { role: "user", content: query }
                         ]
                     })
                 });
-                const d = await res.json();
-                const reply = d.choices[0].message.content;
+                const data = await res.json();
+                const reply = data.choices[0].message.content;
                 document.getElementById('chat-bubble').innerText = reply;
-                talk(reply);
-            } catch (e) {
-                document.getElementById('chat-bubble').innerText = "حدث خطأ في الاتصال.";
-            }
+                speak(reply);
+            } catch (e) { document.getElementById('chat-bubble').innerText = "خطأ في الاتصال."; }
         }
 
         function startMic() {
             const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(!Rec) return;
             const rs = new Rec();
-            rs.lang = 'ar-SA';
-            rs.onstart = () => { window.speechSynthesis.cancel(); document.getElementById('chat-bubble').innerText = "أسمعك..."; };
+            rs.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
             rs.onresult = (e) => { 
                 const q = e.results[0][0].transcript; 
                 document.getElementById('chat-bubble').innerText = q;
-                fetchAI(q);
+                askAI(q);
             };
             rs.start();
         }
 
+        // التحكم بالواجهة
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function logout() { localStorage.removeItem('ameen_pro_v8'); location.reload(); }
+        function toggleProfile(s) { document.getElementById('profile-modal').style.display = s ? 'flex' : 'none'; }
+        
+        function updateBotImg(url) {
+            user.bot = url;
+            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
+            location.reload();
+        }
+
+        function changeLanguage(l) {
+            user.lang = l;
+            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
+            location.reload();
+        }
+
+        function logout() { localStorage.removeItem('ameen_v10_final'); location.reload(); }
     </script>
 </body>
 </html>
