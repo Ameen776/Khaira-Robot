@@ -3,189 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>مختبر المطور أمين الزواحي</title>
-    <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
-    <meta property="og:title" content="مختبر أمين الزواحي">
-
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --neon: #00ffcc; --bg: #02050a; --panel: rgba(0, 15, 30, 0.95); --text: white; }
         .light-mode { --bg: #f0f2f5; --panel: rgba(255, 255, 255, 0.95); --text: #111; --neon: #0077ff; }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; transition: 0.3s; }
 
         /* شاشة الدخول */
         #login-screen { position: fixed; inset: 0; z-index: 3000; background: #000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; box-shadow: 0 0 20px var(--neon); }
-        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; margin-bottom: 15px; text-align: center; }
+        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; }
+        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 15px; }
 
-        /* القوائم العلوية */
-        .header-icons { position: fixed; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 2000; display: none; }
-        .icon-btn { font-size: 2rem; color: var(--neon); cursor: pointer; text-shadow: 0 0 10px var(--neon); }
-        .profile-trigger { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon); overflow: hidden; cursor: pointer; }
-        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
+        /* الهيدر العلوي */
+        header { position: fixed; top: 0; left: 0; right: 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; display: none; }
+        .hamburger { font-size: 2rem; color: var(--neon); cursor: pointer; }
+        .profile-box { display: flex; align-items: center; gap: 10px; background: rgba(0,255,204,0.1); padding: 5px 15px; border-radius: 50px; border: 1.5px solid var(--neon); cursor: pointer; }
+        .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--neon); object-fit: cover; }
 
-        /* الجوانب */
+        /* القائمة الجانبية */
         .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; }
         .sidebar.active { left: 0; }
-        .side-btn { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
         /* معرض الشخصيات */
-        #char-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #char-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .char-item { width: 100px; height: 100px; border-radius: 15px; border: 2px solid var(--neon); cursor: pointer; overflow: hidden; }
+        .char-item { width: 110px; height: 110px; border-radius: 15px; border: 2px solid var(--neon); overflow: hidden; cursor: pointer; }
         .char-item img { width: 100%; height: 100%; object-fit: cover; }
 
         /* الواجهة الرئيسية */
-        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; }
-        .robot-frame { width: 240px; height: 240px; border-radius: 50%; border: 5px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
-        .robot-frame.speaking { animation: pulse 0.4s infinite alternate; border-color: gold; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        main { height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding-top: 60px; }
+        .robot-circle { width: 220px; height: 220px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .robot-circle.speaking { animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
         
-        #chat-display { width: 90%; max-width: 500px; text-align: center; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); min-height: 100px; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .id-badge { font-size: 0.7rem; color: var(--neon); opacity: 0.7; margin-top: 5px; }
+        #chat-bubble { width: 90%; max-width: 450px; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 80px; }
+        .user-id { font-size: 0.8rem; color: var(--neon); font-family: monospace; }
+        footer { position: fixed; bottom: 20px; font-size: 0.8rem; color: var(--neon); }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color: var(--neon); margin-bottom: 15px;">مختبر أمين الزواحي</h2>
-            <input type="text" id="user-name-input" placeholder="أدخل اسمك الملكي...">
-            <button class="side-btn" onclick="registerUser()">دخول النظام</button>
+            <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
+            <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
+            <button class="side-btn" onclick="initApp()">دخول النظام</button>
         </div>
     </div>
 
-    <div class="header-icons" id="main-header">
-        <div class="icon-btn" onclick="toggleMenu()">☰</div>
-        <div class="profile-trigger" onclick="openCharModal()">
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="current-avatar">
+    <header id="main-header">
+        <div class="hamburger" onclick="toggleSidebar()">☰</div>
+        <div class="profile-box" onclick="toggleModal(true)">
+            <span id="display-name" style="font-weight: bold;">أمين</span>
+            <img id="display-avatar" src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="profile-img">
         </div>
-    </div>
+    </header>
 
     <div class="sidebar" id="sidebar">
-        <h3 id="menu-title" style="margin-bottom: 20px; text-align: center;">الإعدادات</h3>
-        <button class="side-btn" onclick="changeLang('en')">🌐 English Language</button>
-        <button class="side-btn" onclick="changeLang('ar')">🌐 اللغة العربية</button>
-        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">🌗 وضع النهار/الليل</button>
-        <button class="side-btn" style="background: #ff4444; color: white;" onclick="logout()">🚪 تسجيل الخروج</button>
+        <button class="side-btn" onclick="setLang('ar')">اللغة العربية</button>
+        <button class="side-btn" onclick="setLang('en')">English Language</button>
+        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">وضع النهار/الليل</button>
+        <button class="side-btn" style="background:#ff4444; color:#fff;" onclick="logout()">تسجيل الخروج</button>
     </div>
 
     <div id="char-modal">
-        <h2 style="color: var(--neon);">اختر شخصية الروبوت</h2>
+        <h2 style="color:var(--neon)">اختر شخصيتك</h2>
         <div class="char-grid">
-            <div class="char-item" onclick="setBot('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
-            <div class="char-item" onclick="setBot('https://i.ibb.co/LX81sqyP/1775595508106c.png')"><img src="https://i.ibb.co/LX81sqyP/1775595508106c.png"></div>
-            <div class="char-item" onclick="setBot('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
-            <div class="char-item" onclick="setBot('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg')"><img src="https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg"></div>
+            <div class="char-item" onclick="changeBot('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
+            <div class="char-item" onclick="changeBot('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
         </div>
-        <button class="side-btn" style="margin-top: 20px; width: 150px;" onclick="closeCharModal()">إغلاق</button>
+        <button class="side-btn" style="width:120px; margin-top:20px;" onclick="toggleModal(false)">إغلاق</button>
     </div>
 
-    <div id="main-app">
-        <div class="robot-frame" id="robot-frame" onclick="startListening()">
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="bot-pic">
+    <main id="main-app">
+        <div class="robot-circle" id="robot-node" onclick="startMic()">
+            <img id="bot-img" src="https://i.ibb.co/FqbzKKDj/images-4.jpg" style="width:100%; height:100%; object-fit:cover;">
         </div>
-        <div id="chat-display">أهلاً بك في مختبر الزواحي..</div>
-        <div id="user-id-display" class="id-badge">ID: 000000000</div>
-    </div>
+        <div id="chat-bubble">بانتظارك.. اضغط للتحدث</div>
+        <div class="user-id" id="uid-display">ID: 000000000</div>
+        <footer>المطور: أمين هارون الزواحي - اليمن 🇾🇪</footer>
+    </main>
 
     <script>
-        const GROQ_API = "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";
-        let user = { name: "", id: "", lang: "ar", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
+        const API_KEY = "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";
+        let config = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg", lang: "ar" };
 
         window.onload = () => {
-            const saved = localStorage.getItem('ameen_pro_user');
-            if(saved) { user = JSON.parse(saved); loadApp(); }
+            const saved = localStorage.getItem('ameen_ai_v3');
+            if(saved) { config = JSON.parse(saved); renderApp(); }
+            else { document.getElementById('login-screen').style.display = 'flex'; }
         };
 
-        function registerUser() {
-            const name = document.getElementById('user-name-input').value;
-            if(!name) return alert("أدخل اسمك");
-            user.name = name;
-            user.id = Math.floor(100000000 + Math.random() * 900000000); // ID من 9 أرقام
-            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
-            loadApp();
+        function initApp() {
+            const n = document.getElementById('user-name-input').value;
+            if(!n) return alert("أدخل اسمك");
+            config.name = n;
+            config.id = Math.floor(100000000 + Math.random() * 900000000);
+            localStorage.setItem('ameen_ai_v3', JSON.stringify(config));
+            renderApp();
         }
 
-        function loadApp() {
+        function renderApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
             document.getElementById('main-header').style.display = 'flex';
-            document.getElementById('user-id-display').innerText = "ID: " + user.id;
-            document.getElementById('bot-pic').src = user.bot;
-            document.getElementById('current-avatar').src = user.bot;
+            document.getElementById('display-name').innerText = config.name;
+            document.getElementById('uid-display').innerText = "ID: " + config.id;
+            document.getElementById('bot-img').src = config.bot;
+            document.getElementById('display-avatar').src = config.bot;
             
-            const msg = user.lang === 'ar' ? `مرحباً بك يا ${user.name}، أنا ذكاء اصطناعي من تطوير أمين الزواحي.` : `Welcome ${user.name}, I am an AI developed by Ameen Al-Zawahi.`;
-            speak(msg);
+            speak(config.lang === 'ar' ? `هلا بك يا ${config.name}` : `Welcome ${config.name}`);
         }
 
-        // دالة التحدث السريع (بدون تأخير)
-        function speak(text) {
+        function speak(txt) {
             window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
-            msg.rate = 1.1; // تسريع الصوت قليلاً
-            
-            msg.onstart = () => document.getElementById('robot-frame').classList.add('speaking');
-            msg.onend = () => document.getElementById('robot-frame').classList.remove('speaking');
-            
-            window.speechSynthesis.speak(msg);
+            const u = new SpeechSynthesisUtterance(txt);
+            u.lang = config.lang === 'ar' ? 'ar-SA' : 'en-US';
+            u.rate = 1.1; 
+            u.onstart = () => document.getElementById('robot-node').classList.add('speaking');
+            u.onend = () => document.getElementById('robot-node').classList.remove('speaking');
+            window.speechSynthesis.speak(u);
         }
 
-        async function getAI(q) {
+        async function askAI(q) {
+            document.getElementById('chat-bubble').innerText = "...";
             try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API}` },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "system", content: `You are an AI by Ameen Al-Zawahi. User name: ${user.name}. Language: ${user.lang}.` }, { role: "user", content: q }]
+                        messages: [{role:"system", content:`اسم المستخدم ${config.name}. المطور أمين الزواحي. اللغة ${config.lang}.`}, {role:"user", content:q}]
                     })
                 });
-                const data = await res.json();
-                const reply = data.choices[0].message.content;
-                document.getElementById('chat-display').innerText = reply;
-                speak(reply); // التحدث فور استلام النص
-            } catch (e) { alert("Network Error"); }
+                const d = await r.json();
+                const reply = d.choices[0].message.content;
+                document.getElementById('chat-bubble').innerText = reply;
+                speak(reply);
+            } catch (e) {
+                document.getElementById('chat-bubble').innerText = "حاول مرة أخرى، هناك ضغط على الشبكة";
+            }
         }
 
-        function startListening() {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return;
-            const rec = new Speech();
-            rec.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
-            rec.onstart = () => { document.getElementById('chat-display').innerText = "..."; };
-            rec.onresult = (e) => { 
-                const q = e.results[0][0].transcript; 
-                document.getElementById('chat-display').innerText = q;
-                getAI(q); 
+        function startMic() {
+            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!Rec) return alert("متصفحك لا يدعم الصوت");
+            const rs = new Rec();
+            rs.lang = config.lang === 'ar' ? 'ar-SA' : 'en-US';
+            rs.onresult = (e) => { 
+                const q = e.results[0][0].transcript;
+                document.getElementById('chat-display')?.innerText ? (document.getElementById('chat-display').innerText = q) : null;
+                askAI(q);
             };
-            rec.start();
+            rs.start();
         }
 
-        // التحكم بالقوائم والشخصيات
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        function openCharModal() { document.getElementById('char-modal').style.display = 'flex'; }
-        function closeCharModal() { document.getElementById('char-modal').style.display = 'none'; }
-        
-        function setBot(url) {
-            user.bot = url;
-            document.getElementById('bot-pic').src = url;
-            document.getElementById('current-avatar').src = url;
-            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
-            closeCharModal();
-        }
-
-        function changeLang(l) {
-            user.lang = l;
-            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
-            location.reload();
-        }
-
-        function logout() { localStorage.removeItem('ameen_pro_user'); location.reload(); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleModal(s) { document.getElementById('char-modal').style.display = s ? 'flex' : 'none'; }
+        function changeBot(u) { config.bot = u; localStorage.setItem('ameen_ai_v3', JSON.stringify(config)); location.reload(); }
+        function setLang(l) { config.lang = l; localStorage.setItem('ameen_ai_v3', JSON.stringify(config)); location.reload(); }
+        function logout() { localStorage.removeItem('ameen_ai_v3'); location.reload(); }
     </script>
 </body>
 </html>
