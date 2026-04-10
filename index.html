@@ -2,618 +2,190 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>مختبر المطور اليمني أمين الزواحي - سارة الذكية</title>
-    <meta name="description" content="نظام ذكاء اصطناعي متطور مع صوت عربي فصيح - المطور اليمني أمين الزواحي">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>مختبر المطور أمين الزواحي</title>
+    <meta property="og:image" content="https://i.ibb.co/LX81sqyP/1775595508106c.png">
+    <meta property="og:title" content="مختبر أمين الزواحي">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --neon: #00ffcc;
-            --bg: #02050a;
-            --panel: rgba(0, 15, 30, 0.95);
-            --text: white;
-            --card-bg: rgba(0, 0, 0, 0.6);
-        }
-
-        .light-mode {
-            --bg: #f0f2f5;
-            --panel: rgba(255, 255, 255, 0.95);
-            --text: #111;
-            --neon: #0077ff;
-            --card-bg: rgba(0, 0, 0, 0.05);
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Cairo', sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s, color 0.3s;
-        }
+        :root { --neon: #00ffcc; --bg: #02050a; --panel: rgba(0, 15, 30, 0.95); --text: white; }
+        .light-mode { --bg: #f0f2f5; --panel: rgba(255, 255, 255, 0.95); --text: #111; --neon: #0077ff; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
 
         /* شاشة الدخول */
-        #login-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: #000 url('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: brightness(0.7);
-        }
+        #login-screen { position: fixed; inset: 0; z-index: 3000; background: #000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; box-shadow: 0 0 20px var(--neon); }
+        input#user-name-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; margin-bottom: 15px; text-align: center; }
 
-        .login-box {
-            background: var(--panel);
-            padding: clamp(25px, 6vw, 35px) clamp(20px, 5vw, 30px);
-            border-radius: 35px;
-            border: 2px solid var(--neon);
-            box-shadow: 0 0 40px var(--neon);
-            text-align: center;
-            width: 90%;
-            max-width: 420px;
-            backdrop-filter: blur(12px);
-            animation: floatIn 0.5s ease;
-        }
+        /* القوائم العلوية */
+        .header-icons { position: fixed; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 2000; display: none; }
+        .icon-btn { font-size: 2rem; color: var(--neon); cursor: pointer; text-shadow: 0 0 10px var(--neon); }
+        .profile-trigger { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon); overflow: hidden; cursor: pointer; }
+        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        @keyframes floatIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .login-box h2 {
-            color: var(--neon);
-            margin-bottom: 8px;
-            font-size: clamp(1.2rem, 5vw, 1.6rem);
-        }
-
-        .login-box h3 {
-            margin-bottom: 20px;
-            font-size: clamp(0.8rem, 3.5vw, 1rem);
-            opacity: 0.9;
-        }
-
-        #user-name-input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 60px;
-            border: 2px solid var(--neon);
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            text-align: center;
-            font-size: 1rem;
-            margin-bottom: 18px;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .enter-btn {
-            background: var(--neon);
-            color: black;
-            padding: 14px;
-            border: none;
-            border-radius: 60px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1rem;
-            box-shadow: 0 0 15px var(--neon);
-            transition: 0.2s;
-        }
-
-        .enter-btn:hover { transform: translateY(-2px); }
-
-        /* الهيدر والملف الشخصي */
-        .user-profile-header {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1600;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 12px;
-            border-radius: 50px;
-            border: 1px solid var(--neon);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .user-profile-header:hover { transform: scale(1.02); }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon); object-fit: cover; }
-
-        /* قائمة الهمبرجر */
-        .hamburger {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1600;
-            cursor: pointer;
-            font-size: 2rem;
-            color: var(--neon);
-            display: none;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 260px;
-            height: 100%;
-            background: var(--panel);
-            border-right: 2px solid var(--neon);
-            z-index: 1550;
-            padding: 70px 20px;
-            transition: 0.4s;
-            backdrop-filter: blur(15px);
-        }
+        /* الجوانب */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; }
         .sidebar.active { left: 0; }
-        .side-btn {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            background: var(--neon);
-            color: black;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-        .side-btn:hover { opacity: 0.85; transform: translateX(-3px); }
+        .side-btn { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
 
-        /* التطبيق الرئيسي */
-        #main-app {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-evenly;
-        }
+        /* معرض الشخصيات */
+        #char-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .char-item { width: 100px; height: 100px; border-radius: 15px; border: 2px solid var(--neon); cursor: pointer; overflow: hidden; }
+        .char-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        .robot-frame {
-            width: min(260px, 60vw);
-            height: min(260px, 60vw);
-            border-radius: 50%;
-            border: 4px solid var(--neon);
-            box-shadow: 0 0 30px var(--neon);
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .robot-img { width: 100%; height: 100%; object-fit: cover; }
-        .speaking { animation: pulse 0.4s infinite alternate; border-color: #fff; }
+        /* الواجهة الرئيسية */
+        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: space-evenly; }
+        .robot-frame { width: 240px; height: 240px; border-radius: 50%; border: 5px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .robot-frame.speaking { animation: pulse 0.4s infinite alternate; border-color: gold; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-
-        #chat-display {
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            background: var(--panel);
-            padding: 18px;
-            border-radius: 25px;
-            border: 1px solid var(--neon);
-            min-height: 85px;
-            color: var(--text);
-            font-size: clamp(0.85rem, 4vw, 1rem);
-        }
-        .status-tag { color: var(--neon); font-size: 0.8rem; font-weight: bold; margin-top: 8px; }
-        .developer-badge { font-size: 0.7rem; margin-top: 8px; color: var(--neon); opacity: 0.8; }
-
-        /* مودال الملف الشخصي */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: var(--panel);
-            border-radius: 30px;
-            width: 90%;
-            max-width: 480px;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 22px;
-            border: 2px solid var(--neon);
-            color: var(--text);
-            text-align: center;
-        }
-        .modal-content h3 { color: var(--neon); margin-bottom: 15px; font-size: 1.3rem; }
-        .profile-detail { margin: 15px 0; padding: 12px; background: var(--card-bg); border-radius: 18px; }
-        .profile-detail div { margin: 8px 0; }
-        .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .avatar-option {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.2s;
-            object-fit: cover;
-        }
-        .avatar-option:hover, .avatar-option.selected { border-color: var(--neon); transform: scale(1.05); }
-        .upload-btn {
-            background: var(--neon);
-            color: black;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 50px;
-            margin: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .close-modal {
-            background: #ff4444;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 30px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        .user-id-text { font-size: 0.75rem; opacity: 0.8; word-break: break-all; }
+        
+        #chat-display { width: 90%; max-width: 500px; text-align: center; background: var(--panel); padding: 20px; border-radius: 20px; border: 1px solid var(--neon); min-height: 100px; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .id-badge { font-size: 0.7rem; color: var(--neon); opacity: 0.7; margin-top: 5px; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
     <div id="login-screen">
         <div class="login-box">
-            <h2>🤖 مختبر المطور اليمني</h2>
-            <h3>أمين هارون الزواحي</h3>
-            <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
-            <button class="enter-btn" onclick="registerUser()">دخول النظام الملكي</button>
+            <h2 style="color: var(--neon); margin-bottom: 15px;">مختبر أمين الزواحي</h2>
+            <input type="text" id="user-name-input" placeholder="أدخل اسمك الملكي...">
+            <button class="side-btn" onclick="registerUser()">دخول النظام</button>
         </div>
     </div>
 
-    <div class="user-profile-header" id="profile-header">
-        <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="user-avatar" id="profile-pic">
-        <span id="profile-name" style="font-size: 0.75rem; color: var(--neon);"></span>
+    <div class="header-icons" id="main-header">
+        <div class="icon-btn" onclick="toggleMenu()">☰</div>
+        <div class="profile-trigger" onclick="openCharModal()">
+            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="current-avatar">
+        </div>
     </div>
 
-    <div class="hamburger" id="ham-icon" onclick="toggleMenu()">☰</div>
     <div class="sidebar" id="sidebar">
-        <button class="side-btn" id="theme-btn" onclick="toggleTheme()">🌗 وضع النهار/الليل</button>
-        <button class="side-btn" id="lang-btn" onclick="switchLanguage()">🌐 تبديل اللغة (English/Arabic)</button>
-        <button class="side-btn" style="background:#ff4444; color:white;" onclick="logoutUser()">🚪 تسجيل الخروج</button>
+        <h3 id="menu-title" style="margin-bottom: 20px; text-align: center;">الإعدادات</h3>
+        <button class="side-btn" onclick="changeLang('en')">🌐 English Language</button>
+        <button class="side-btn" onclick="changeLang('ar')">🌐 اللغة العربية</button>
+        <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">🌗 وضع النهار/الليل</button>
+        <button class="side-btn" style="background: #ff4444; color: white;" onclick="logout()">🚪 تسجيل الخروج</button>
+    </div>
+
+    <div id="char-modal">
+        <h2 style="color: var(--neon);">اختر شخصية الروبوت</h2>
+        <div class="char-grid">
+            <div class="char-item" onclick="setBot('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
+            <div class="char-item" onclick="setBot('https://i.ibb.co/LX81sqyP/1775595508106c.png')"><img src="https://i.ibb.co/LX81sqyP/1775595508106c.png"></div>
+            <div class="char-item" onclick="setBot('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
+            <div class="char-item" onclick="setBot('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg')"><img src="https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg"></div>
+        </div>
+        <button class="side-btn" style="margin-top: 20px; width: 150px;" onclick="closeCharModal()">إغلاق</button>
     </div>
 
     <div id="main-app">
-        <div class="robot-frame" id="robot-frame" onclick="handleRobotClick()">
-            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" class="robot-img" id="robot-img">
+        <div class="robot-frame" id="robot-frame" onclick="startListening()">
+            <img src="https://i.ibb.co/FqbzKKDj/images-4.jpg" id="bot-pic">
         </div>
-        <div id="chat-display">حيا الله بيك.. سجل دخولك وابشر</div>
-        <div class="status-tag" id="status-text">اضغط على صورة الروبوت للتحدث</div>
-        <div class="developer-badge" id="dev-badge">🇾🇪 المطور: أمين هارون الزواحي - اليمن 🇾🇪</div>
-    </div>
-
-    <!-- مودال الملف الشخصي -->
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title">👤 الملف الشخصي</h3>
-            <div class="profile-detail">
-                <div><strong id="name-label">الاسم:</strong> <span id="modal-username"></span></div>
-                <div><strong id="id-label">المعرف (ID):</strong> <span id="modal-userid" class="user-id-text"></span></div>
-            </div>
-            <div>
-                <p id="change-pic-text">📸 تغيير صورة الروبوت:</p>
-                <div class="avatar-grid" id="robot-avatars-grid"></div>
-                <input type="file" id="upload-photo" accept="image/*" style="display: none;">
-                <button class="upload-btn" id="upload-btn" onclick="document.getElementById('upload-photo').click()">📁 رفع صورة من المعرض</button>
-            </div>
-            <button class="close-modal" onclick="closeProfileModal()">إغلاق</button>
-        </div>
+        <div id="chat-display">أهلاً بك في مختبر الزواحي..</div>
+        <div id="user-id-display" class="id-badge">ID: 000000000</div>
     </div>
 
     <script>
-        // ---------- الثوابت والمتغيرات ----------
         const GROQ_API = "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";
-        let currentUser = null;
-        let isSpeaking = false;
-        let currentLang = "ar";
-        
-        // 10 صور روبوت جاهزة
-        const robotImagesList = [
-            "https://robohash.org/101?set=set1&size=200x200",
-            "https://robohash.org/102?set=set2&size=200x200",
-            "https://robohash.org/103?set=set3&size=200x200",
-            "https://robohash.org/104?set=set4&size=200x200",
-            "https://robohash.org/105?set=set1&size=200x200",
-            "https://robohash.org/106?set=set2&size=200x200",
-            "https://robohash.org/107?set=set3&size=200x200",
-            "https://robohash.org/108?set=set4&size=200x200",
-            "https://robohash.org/109?set=set1&size=200x200",
-            "https://robohash.org/110?set=set2&size=200x200"
-        ];
-        
-        // هوية المطور الثابتة
-        const DEVELOPER_INFO = { name: "أمين هارون الزواحي", country: "اليمن", countryEn: "Yemen" };
-        
-        // نظام البرومت الثابت
-        function getSystemPrompt() {
-            if (currentLang === "ar") {
-                return `أنتِ "سارة"، ذكاء اصطناعي عربي فصيح. مطورتك هو المطور اليمني "أمين هارون الزواحي" من اليمن. إذا سألك المستخدم عن أصل المبرمج، أجيبي: "المبرمج أمين هارون الزواحي من اليمن". تحدثي بلهجة عربية فصحى جميلة. اسم المستخدم: ${currentUser?.name || 'الزائر'}.`;
-            } else {
-                return `You are "Sara", an AI assistant. Your developer is the Yemeni programmer "Ameen Haroon Al-Zawahi" from Yemen. If asked, say: "The programmer Ameen Haroon Al-Zawahi is from Yemen." User name: ${currentUser?.name || 'Guest'}.`;
-            }
-        }
-        
-        // الترجمة
-        const translations = {
-            ar: {
-                status_listen: "الحالة: أسمعك الآن.. تفضل 🎙️",
-                status_thinking: "سارة تفكر في الرد...",
-                status_ready: "جاهزة لسماعك (اضغط الصورة)",
-                status_error: "خطأ: حاول مرة أخرى",
-                status_network: "خطأ بالشبكة: تأكد من النت",
-                chat_welcome: (name) => `يا هلا والله فيك يا ${name}، أنا سارة، ذكاء اصطناعي من تطوير المبرمج اليمني أمين هارون الزواحي. كيف أقدر أساعدك؟`,
-                robot_tap: "اضغط على صورة الروبوت للتحدث",
-                login_alert: "سجل اسمك أولاً يا بطل",
-                modal_title: "👤 الملف الشخصي",
-                name_label: "الاسم:",
-                id_label: "المعرف (ID):",
-                change_pic: "📸 تغيير صورة الروبوت:",
-                upload_btn: "📁 رفع صورة من المعرض",
-                close_btn: "إغلاق",
-                theme_btn: "🌗 وضع النهار/الليل",
-                lang_btn: "🌐 تبديل اللغة (English/Arabic)",
-                logout_btn: "🚪 تسجيل الخروج"
-            },
-            en: {
-                status_listen: "Status: Listening now... 🎙️",
-                status_thinking: "Sara is thinking...",
-                status_ready: "Ready for your voice (tap robot)",
-                status_error: "Error: Please try again",
-                status_network: "Network error: Check connection",
-                chat_welcome: (name) => `Welcome ${name}! I'm Sara, an AI developed by the Yemeni programmer Ameen Haroon Al-Zawahi. How can I help you?`,
-                robot_tap: "Tap the robot image to speak",
-                login_alert: "Please enter your name first",
-                modal_title: "👤 Profile",
-                name_label: "Name:",
-                id_label: "ID:",
-                change_pic: "📸 Change Robot Avatar:",
-                upload_btn: "📁 Upload from Gallery",
-                close_btn: "Close",
-                theme_btn: "🌗 Day/Night Mode",
-                lang_btn: "🌐 Switch Language (English/Arabic)",
-                logout_btn: "🚪 Logout"
-            }
+        let user = { name: "", id: "", lang: "ar", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
+
+        window.onload = () => {
+            const saved = localStorage.getItem('ameen_pro_user');
+            if(saved) { user = JSON.parse(saved); loadApp(); }
         };
-        
-        function updateUITexts() {
-            const t = translations[currentLang];
-            if (currentUser) {
-                document.getElementById("theme-btn").innerText = t.theme_btn;
-                document.getElementById("lang-btn").innerText = t.lang_btn;
-            }
-            const devBadge = document.getElementById("dev-badge");
-            if (devBadge) {
-                if (currentLang === "ar") devBadge.innerText = "🇾🇪 المطور: أمين هارون الزواحي - اليمن 🇾🇪";
-                else devBadge.innerText = "🇾🇪 Developer: Ameen Haroon Al-Zawahi - Yemen 🇾🇪";
-            }
-            const statusText = document.getElementById("status-text");
-            if (statusText && currentUser) statusText.innerText = t.status_ready;
-        }
-        
-        function switchLanguage() {
-            currentLang = currentLang === "ar" ? "en" : "ar";
-            localStorage.setItem("app_lang", currentLang);
-            if (currentLang === "en") {
-                document.documentElement.setAttribute("lang", "en");
-                document.documentElement.setAttribute("dir", "ltr");
-                document.body.style.direction = "ltr";
-                document.querySelector(".hamburger").style.left = "15px";
-                document.querySelector(".user-profile-header").style.right = "15px";
-            } else {
-                document.documentElement.setAttribute("lang", "ar");
-                document.documentElement.setAttribute("dir", "rtl");
-                document.body.style.direction = "rtl";
-                document.querySelector(".hamburger").style.left = "15px";
-                document.querySelector(".user-profile-header").style.right = "15px";
-            }
-            updateUITexts();
-            if (currentUser && document.getElementById("main-app").style.display === "flex") {
-                const welcomeMsg = translations[currentLang].chat_welcome(currentUser.name);
-                document.getElementById("chat-display").innerText = welcomeMsg;
-            }
-        }
-        
-        function getBestArabicVoice() {
-            const voices = window.speechSynthesis.getVoices();
-            let preferred = voices.find(v => v.lang === 'ar-SA' && (v.name.includes('Zara') || v.name.includes('Microsoft')));
-            if (!preferred) preferred = voices.find(v => v.lang === 'ar-EG' || v.lang === 'ar-SA');
-            return preferred || voices[0];
-        }
-        
-        function speak(text) {
-            if (!text) return;
-            window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(text);
-            let voice = getBestArabicVoice();
-            if (voice) msg.voice = voice;
-            msg.lang = 'ar-SA';
-            msg.rate = 0.85;
-            msg.pitch = 1.05;
-            msg.onstart = () => {
-                isSpeaking = true;
-                document.getElementById('robot-frame').classList.add('speaking');
-            };
-            msg.onend = () => {
-                isSpeaking = false;
-                document.getElementById('robot-frame').classList.remove('speaking');
-            };
-            window.speechSynthesis.speak(msg);
-        }
-        
-        function updateRobotImage(url) {
-            document.getElementById('robot-img').src = url;
-            document.getElementById('profile-pic').src = url;
-            if (currentUser) {
-                currentUser.robotImage = url;
-                localStorage.setItem('ameen_ai_session', JSON.stringify(currentUser));
-            }
-        }
-        
-        function setupImageUpload() {
-            const input = document.getElementById('upload-photo');
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => { updateRobotImage(ev.target.result); closeProfileModal(); };
-                    reader.readAsDataURL(file);
-                } else alert("اختر صورة صالحة");
-            };
-        }
-        
-        function renderAvatarGrid() {
-            const grid = document.getElementById('robot-avatars-grid');
-            grid.innerHTML = '';
-            robotImagesList.forEach((imgUrl) => {
-                const img = document.createElement('img');
-                img.src = imgUrl;
-                img.className = 'avatar-option';
-                img.addEventListener('click', () => { updateRobotImage(imgUrl); closeProfileModal(); });
-                grid.appendChild(img);
-            });
-        }
-        
-        function openProfileModal() {
-            if (!currentUser) return;
-            const t = translations[currentLang];
-            document.getElementById('modal-title').innerText = t.modal_title;
-            document.getElementById('name-label').innerHTML = t.name_label;
-            document.getElementById('id-label').innerHTML = t.id_label;
-            document.getElementById('change-pic-text').innerText = t.change_pic;
-            document.getElementById('upload-btn').innerText = t.upload_btn;
-            document.querySelector('.close-modal').innerText = t.close_btn;
-            document.getElementById('modal-username').innerText = currentUser.name;
-            document.getElementById('modal-userid').innerText = currentUser.id;
-            renderAvatarGrid();
-            document.getElementById('profile-modal').style.display = 'flex';
-        }
-        
-        function closeProfileModal() { document.getElementById('profile-modal').style.display = 'none'; }
-        
+
         function registerUser() {
-            const name = document.getElementById('user-name-input').value.trim();
-            if (!name) { alert(translations[currentLang].login_alert); return; }
-            const userId = "USER_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-            let robotImage = "https://i.ibb.co/FqbzKKDj/images-4.jpg";
-            currentUser = { name: name, id: userId, robotImage: robotImage };
-            localStorage.setItem('ameen_ai_session', JSON.stringify(currentUser));
-            loadApp(false);
+            const name = document.getElementById('user-name-input').value;
+            if(!name) return alert("أدخل اسمك");
+            user.name = name;
+            user.id = Math.floor(100000000 + Math.random() * 900000000); // ID من 9 أرقام
+            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
+            loadApp();
         }
-        
-        function loadApp(isAuto) {
+
+        function loadApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
-            document.getElementById('profile-header').style.display = 'flex';
-            document.getElementById('ham-icon').style.display = 'block';
-            document.getElementById('profile-name').innerText = currentUser.name;
-            if (currentUser.robotImage) {
-                document.getElementById('robot-img').src = currentUser.robotImage;
-                document.getElementById('profile-pic').src = currentUser.robotImage;
-            }
-            const t = translations[currentLang];
-            const welcomeMsg = t.chat_welcome(currentUser.name);
-            document.getElementById('chat-display').innerText = welcomeMsg;
-            if (!isAuto) speak(welcomeMsg);
-            updateUITexts();
+            document.getElementById('main-header').style.display = 'flex';
+            document.getElementById('user-id-display').innerText = "ID: " + user.id;
+            document.getElementById('bot-pic').src = user.bot;
+            document.getElementById('current-avatar').src = user.bot;
+            
+            const msg = user.lang === 'ar' ? `مرحباً بك يا ${user.name}، أنا ذكاء اصطناعي من تطوير أمين الزواحي.` : `Welcome ${user.name}, I am an AI developed by Ameen Al-Zawahi.`;
+            speak(msg);
         }
-        
-        function startListening() {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRec) { alert("المتصفح لا يدعم الميكروفون"); return; }
-            const recognition = new SpeechRec();
-            recognition.lang = currentLang === "ar" ? "ar-SA" : "en-US";
-            recognition.onstart = () => { document.getElementById('status-text').innerText = translations[currentLang].status_listen; };
-            recognition.onresult = async (event) => {
-                const query = event.results[0][0].transcript;
-                document.getElementById('chat-display').innerHTML = `<span style="opacity:0.8;">🗣️ ${currentLang === 'ar' ? 'أنت' : 'You'}:</span> ${query}`;
-                await getAIResponse(query);
-            };
-            recognition.onerror = () => {
-                const t = translations[currentLang];
-                document.getElementById('status-text').innerText = t.status_error;
-                setTimeout(() => { document.getElementById('status-text').innerText = t.status_ready; }, 1500);
-            };
-            recognition.start();
+
+        // دالة التحدث السريع (بدون تأخير)
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
+            msg.rate = 1.1; // تسريع الصوت قليلاً
+            
+            msg.onstart = () => document.getElementById('robot-frame').classList.add('speaking');
+            msg.onend = () => document.getElementById('robot-frame').classList.remove('speaking');
+            
+            window.speechSynthesis.speak(msg);
         }
-        
-        async function getAIResponse(userQuery) {
-            const t = translations[currentLang];
-            document.getElementById('status-text').innerText = t.status_thinking;
+
+        async function getAI(q) {
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "system", content: getSystemPrompt() }, { role: "user", content: userQuery }],
-                        temperature: 0.5
+                        messages: [{ role: "system", content: `You are an AI by Ameen Al-Zawahi. User name: ${user.name}. Language: ${user.lang}.` }, { role: "user", content: q }]
                     })
                 });
                 const data = await res.json();
-                if (data.choices && data.choices[0]) {
-                    let reply = data.choices[0].message.content;
-                    if (currentLang === "ar" && (reply.includes("ليبيا") || reply.includes("تونس"))) reply = "المبرمج أمين هارون الزواحي من اليمن.";
-                    document.getElementById('chat-display').innerHTML = `<span style="opacity:0.8;">🤖 سارة:</span> ${reply}`;
-                    speak(reply);
-                    document.getElementById('status-text').innerText = t.status_ready;
-                } else throw new Error();
-            } catch (err) {
-                document.getElementById('status-text').innerText = t.status_network;
-                document.getElementById('chat-display').innerHTML = t.status_network;
-            }
+                const reply = data.choices[0].message.content;
+                document.getElementById('chat-display').innerText = reply;
+                speak(reply); // التحدث فور استلام النص
+            } catch (e) { alert("Network Error"); }
         }
-        
-        function handleRobotClick() {
-            if (isSpeaking) { window.speechSynthesis.cancel(); isSpeaking = false; document.getElementById('robot-frame').classList.remove('speaking'); }
-            else { startListening(); }
+
+        function startListening() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!Speech) return;
+            const rec = new Speech();
+            rec.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
+            rec.onstart = () => { document.getElementById('chat-display').innerText = "..."; };
+            rec.onresult = (e) => { 
+                const q = e.results[0][0].transcript; 
+                document.getElementById('chat-display').innerText = q;
+                getAI(q); 
+            };
+            rec.start();
         }
-        
+
+        // التحكم بالقوائم والشخصيات
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        function logoutUser() { localStorage.removeItem('ameen_ai_session'); localStorage.removeItem('app_lang'); location.reload(); }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('app_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
+        function openCharModal() { document.getElementById('char-modal').style.display = 'flex'; }
+        function closeCharModal() { document.getElementById('char-modal').style.display = 'none'; }
         
-        window.onload = () => {
-            const savedLang = localStorage.getItem('app_lang');
-            if (savedLang === 'ar' || savedLang === 'en') currentLang = savedLang;
-            if (currentLang === 'en') { document.documentElement.setAttribute("lang", "en"); document.documentElement.setAttribute("dir", "ltr"); document.body.style.direction = "ltr"; }
-            const savedTheme = localStorage.getItem('app_theme');
-            if (savedTheme === 'light') document.body.classList.add('light-mode');
-            const savedSession = localStorage.getItem('ameen_ai_session');
-            if (savedSession) { currentUser = JSON.parse(savedSession); if (!currentUser.robotImage) currentUser.robotImage = "https://i.ibb.co/FqbzKKDj/images-4.jpg"; loadApp(true); }
-            setupImageUpload();
-            window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
-            document.getElementById('profile-header').addEventListener('click', openProfileModal);
-            updateUITexts();
-        };
+        function setBot(url) {
+            user.bot = url;
+            document.getElementById('bot-pic').src = url;
+            document.getElementById('current-avatar').src = url;
+            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
+            closeCharModal();
+        }
+
+        function changeLang(l) {
+            user.lang = l;
+            localStorage.setItem('ameen_pro_user', JSON.stringify(user));
+            location.reload();
+        }
+
+        function logout() { localStorage.removeItem('ameen_pro_user'); location.reload(); }
     </script>
 </body>
 </html>
