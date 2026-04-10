@@ -11,72 +11,72 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; transition: 0.3s; }
 
-        /* الهيدر العلوي */
+        /* شاشة الدخول بخلفية الذكاء الاصطناعي */
+        #login-screen { 
+            position: fixed; inset: 0; z-index: 3000; 
+            background: url('https://img.freepik.com/free-photo/ai-technology-brain-background-digital-transformation-concept_53876-124671.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex; align-items: center; justify-content: center; 
+        }
+        #login-screen::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.7); }
+        .login-box { position: relative; background: var(--panel); padding: 40px 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; box-shadow: 0 0 30px var(--neon); }
+
+        /* الهيدر */
         header { position: fixed; top: 0; left: 0; right: 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; display: none; }
         .hamburger { font-size: 2.2rem; color: var(--neon); cursor: pointer; }
         .profile-trigger { display: flex; align-items: center; gap: 10px; background: rgba(0,255,204,0.1); padding: 5px 15px; border-radius: 50px; border: 1.5px solid var(--neon); cursor: pointer; }
         .profile-trigger img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); }
 
         /* القائمة الجانبية */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; text-align: right; }
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; }
         .sidebar.active { left: 0; }
         .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        select.lang-select { width: 100%; padding: 10px; border-radius: 10px; background: #000; color: var(--neon); border: 1px solid var(--neon); margin-bottom: 15px; }
 
-        /* شاشة الدخول */
-        #login-screen { position: fixed; inset: 0; z-index: 3000; background: #000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: var(--panel); padding: 30px; border-radius: 25px; border: 2px solid var(--neon); text-align: center; width: 85%; max-width: 400px; }
-        .main-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 15px; }
-
-        /* معرض الشخصيات (داخل الملف الشخصي) */
-        #profile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        /* الملف الشخصي (يحتوي على الـ ID) */
+        #profile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .id-card { background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 10px; border: 1px dashed var(--neon); color: var(--neon); font-family: monospace; margin-bottom: 20px; font-size: 1.2rem; }
+        .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .char-item { width: 100px; height: 100px; border-radius: 15px; border: 2px solid var(--neon); overflow: hidden; cursor: pointer; }
         .char-item img { width: 100%; height: 100%; object-fit: cover; }
 
         /* الواجهة الرئيسية */
         main { height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-        .robot-node { width: 230px; height: 230px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); overflow: hidden; cursor: pointer; transition: 0.3s; }
-        .speaking { animation: pulse 0.4s infinite alternate; border-color: gold; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        .robot-node { width: 240px; height: 240px; border-radius: 50%; border: 5px solid var(--neon); box-shadow: 0 0 40px var(--neon); overflow: hidden; cursor: pointer; }
+        .speaking { animation: pulse 0.3s infinite alternate; border-color: gold; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
         
-        #chat-bubble { width: 90%; max-width: 480px; background: var(--panel); padding: 25px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 100px; }
-        footer { position: fixed; bottom: 20px; font-size: 0.8rem; color: var(--neon); text-align: center; width: 100%; }
+        #chat-bubble { width: 90%; max-width: 500px; background: var(--panel); padding: 25px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.2rem; min-height: 100px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .main-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color: var(--neon); margin-bottom: 20px;">مختبر أمين الزواحي</h2>
-            <input type="text" id="name-field" class="main-input" placeholder="سجل اسمك يا ملك..">
-            <button class="side-btn" onclick="initUser()">دخول النظام الملكي</button>
+            <h1 style="color: var(--neon); margin-bottom: 10px; font-size: 1.8rem;">نظام الزواحي الملكي</h1>
+            <p style="color: #ccc; margin-bottom: 25px; font-size: 0.9rem;">Intelligence Reborn</p>
+            <input type="text" id="name-field" class="main-input" placeholder="اكتب اسمك للدخول..">
+            <button class="side-btn" style="font-size: 1.1rem; height: 55px;" onclick="initUser()">دخول النظام</button>
         </div>
     </div>
 
     <header id="main-header">
         <div class="hamburger" onclick="toggleSidebar()">☰</div>
         <div class="profile-trigger" onclick="toggleProfile(true)">
-            <span id="display-name" style="font-weight: bold;">أمين</span>
-            <img id="display-avatar" src="https://i.ibb.co/FqbzKKDj/images-4.jpg">
+            <span id="nav-name" style="font-weight: bold;">المستخدم</span>
+            <img id="nav-avatar" src="https://i.ibb.co/FqbzKKDj/images-4.jpg">
         </div>
     </header>
 
     <div class="sidebar" id="sidebar">
-        <p style="color:var(--neon); margin-bottom:10px;">اختر اللغة / Select Language</p>
-        <select class="lang-select" onchange="changeLanguage(this.value)">
-            <option value="ar">العربية (Arabic)</option>
-            <option value="en">English (إنجليزي)</option>
-            <option value="fr">Français (فرنسي)</option>
-            <option value="tr">Türkçe (تركي)</option>
-            <option value="es">Español (إسباني)</option>
-        </select>
         <button class="side-btn" onclick="document.body.classList.toggle('light-mode')">🌓 وضع النهار/الليل</button>
         <button class="side-btn" style="background:#ff4444; color:#fff;" onclick="logout()">🚪 تسجيل الخروج</button>
     </div>
 
     <div id="profile-modal">
-        <h2 style="color:var(--neon)">تغيير شخصية الروبوت</h2>
+        <h2 style="color:var(--neon); margin-bottom: 10px;">الملف الشخصي</h2>
+        <div class="id-card" id="id-display">ID: 000000000</div>
+        <p style="color:#fff; margin-bottom: 15px;">اختر مظهر الروبوت:</p>
         <div class="char-grid">
             <div class="char-item" onclick="updateBotImg('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
             <div class="char-item" onclick="updateBotImg('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
@@ -90,17 +90,15 @@
         <div class="robot-node" id="r-node" onclick="startMic()">
             <img id="main-bot-img" src="https://i.ibb.co/FqbzKKDj/images-4.jpg" style="width:100%; height:100%; object-fit:cover;">
         </div>
-        <div id="chat-bubble">بانتظارك..</div>
-        <div id="uid-display" style="color:var(--neon); font-size:0.8rem; font-family:monospace;">ID: 000000000</div>
-        <footer>المطور: أمين هارون الزواحي - اليمن 🇾🇪</footer>
+        <div id="chat-bubble">اضغط على الروبوت للتحدث..</div>
     </main>
 
     <script>
         const API_KEY = "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";
-        let user = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg", lang: "ar" };
+        let user = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg" };
 
         window.onload = () => {
-            const saved = localStorage.getItem('ameen_v10_final');
+            const saved = localStorage.getItem('ameen_final_v11');
             if(saved) { user = JSON.parse(saved); launch(); }
         };
 
@@ -109,7 +107,7 @@
             if(!n) return alert("الرجاء كتابة الاسم");
             user.name = n;
             user.id = Math.floor(100000000 + Math.random() * 900000000);
-            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
+            localStorage.setItem('ameen_final_v11', JSON.stringify(user));
             launch(true);
         }
 
@@ -117,13 +115,13 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-main').style.display = 'flex';
             document.getElementById('main-header').style.display = 'flex';
-            document.getElementById('display-name').innerText = user.name;
-            document.getElementById('uid-display').innerText = "ID: " + user.id;
+            document.getElementById('nav-name').innerText = user.name;
+            document.getElementById('id-display').innerText = "ID: " + user.id;
             document.getElementById('main-bot-img').src = user.bot;
-            document.getElementById('display-avatar').src = user.bot;
+            document.getElementById('nav-avatar').src = user.bot;
 
             if(isWelcome) {
-                const msg = `أهلاً بك يا ${user.name}.. أهلاً بك في نظام الذكاء الاصطناعي الخاص بمختبر الزواحي. أنا سارة، مبرمجة بواسطة المطور أمين الزواحي.. هل يمكنني مساعدتك؟`;
+                const msg = `أهلاً بك يا ${user.name}.. أهلاً بك في نظام الذكاء الاصطناعي. أنا سارة، مبرمجة بواسطة المطور أمين الزواحي.. هل يمكنني مساعدتك؟`;
                 document.getElementById('chat-bubble').innerText = msg;
                 speak(msg);
             }
@@ -132,8 +130,8 @@
         function speak(text) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = user.lang === 'ar' ? 'ar-SA' : (user.lang === 'en' ? 'en-US' : user.lang);
-            msg.rate = 1.0;
+            msg.lang = 'ar-SA';
+            msg.rate = 1.1; // سرعة الرد الصوتي
             msg.onstart = () => document.getElementById('r-node').classList.add('speaking');
             msg.onend = () => document.getElementById('r-node').classList.remove('speaking');
             window.speechSynthesis.speak(msg);
@@ -149,25 +147,30 @@
                         model: "llama-3.3-70b-versatile",
                         messages: [
                             { role: "system", content: `اسمك سارة. مبرمجك هو أمين الزواحي. تاريخ إنشائك 10 أغسطس 2026. 
-                            إذا سئلت عن اسمك: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 8 شهر 10".
-                            إذا سئلت عن أمين الزواحي: "هو مبرمجي الخاص، وهو الذي اوجدني الى هذا العالم، هو شخص مؤثر في الفيسبوك، ولديه حساب يمتلك اكثر من 15000 متابع، ولديه محتوى كوميدي، فخور به جداً".
-                            اللغة الحالية للمستخدم: ${user.lang}.` },
+                            عند سؤالك عن اسمك: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 8 شهر 10".
+                            عند سؤالك عن أمين الزواحي: "هو مبرمجي الخاص، وهو الذي اوجدني الى هذا العالم، هو شخص مؤثر في الفيسبوك، يمتلك اكثر من 15000 متابع، لديه محتوى كوميدي، فخور به جداً".` },
                             { role: "user", content: query }
-                        ]
+                        ],
+                        max_tokens: 500, // ردود أسرع
+                        temperature: 0.6
                     })
                 });
                 const data = await res.json();
                 const reply = data.choices[0].message.content;
                 document.getElementById('chat-bubble').innerText = reply;
                 speak(reply);
-            } catch (e) { document.getElementById('chat-bubble').innerText = "خطأ في الاتصال."; }
+            } catch (e) { document.getElementById('chat-bubble').innerText = "خطأ في الاتصال بالشبكة."; }
         }
 
         function startMic() {
             const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Rec) return;
+            if(!Rec) return alert("المتصفح لا يدعم الصوت");
             const rs = new Rec();
-            rs.lang = user.lang === 'ar' ? 'ar-SA' : 'en-US';
+            rs.lang = 'ar-SA';
+            rs.onstart = () => { 
+                window.speechSynthesis.cancel(); 
+                document.getElementById('chat-bubble').innerText = "أسمعك الآن..."; 
+            };
             rs.onresult = (e) => { 
                 const q = e.results[0][0].transcript; 
                 document.getElementById('chat-bubble').innerText = q;
@@ -176,23 +179,16 @@
             rs.start();
         }
 
-        // التحكم بالواجهة
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function toggleProfile(s) { document.getElementById('profile-modal').style.display = s ? 'flex' : 'none'; }
         
         function updateBotImg(url) {
             user.bot = url;
-            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
+            localStorage.setItem('ameen_final_v11', JSON.stringify(user));
             location.reload();
         }
 
-        function changeLanguage(l) {
-            user.lang = l;
-            localStorage.setItem('ameen_v10_final', JSON.stringify(user));
-            location.reload();
-        }
-
-        function logout() { localStorage.removeItem('ameen_v10_final'); location.reload(); }
+        function logout() { localStorage.removeItem('ameen_final_v11'); location.reload(); }
     </script>
 </body>
 </html>
