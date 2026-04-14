@@ -11,7 +11,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; height: 100vh; overflow: hidden; transition: 0.3s; }
 
-        /* شاشة الدخول بخلفية الذكاء الاصطناعي القوية */
+        /* شاشة الدخول */
         #login-screen { 
             position: fixed; inset: 0; z-index: 3000; 
             background: url('https://img.freepik.com/free-photo/ai-technology-brain-background-digital-transformation-concept_53876-124671.jpg') no-repeat center center;
@@ -25,14 +25,14 @@
         header { position: fixed; top: 0; left: 0; right: 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; display: none; }
         .hamburger { font-size: 2.2rem; color: var(--neon); cursor: pointer; }
         .profile-trigger { display: flex; align-items: center; gap: 10px; background: rgba(0,255,204,0.1); padding: 5px 15px; border-radius: 50px; border: 1.5px solid var(--neon); cursor: pointer; }
-        .profile-trigger img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--neon); }
+        .profile-trigger img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); }
 
-        /* القائمة الجانبية (تعديل اللغات) */
+        /* القائمة الجانبية */
         .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--panel); border-right: 2px solid var(--neon); z-index: 2500; padding: 80px 20px; transition: 0.4s; }
         .sidebar.active { left: 0; }
         .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: var(--neon); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        /* الملف الشخصي (الـ ID) */
+        /* الملف الشخصي */
         #profile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .id-card { background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 10px; border: 1px dashed var(--neon); color: var(--neon); font-family: monospace; margin-bottom: 20px; font-size: 1.2rem; }
         .char-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -45,10 +45,10 @@
         .speaking { animation: pulse 0.3s infinite alternate; border-color: gold; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
         
-        #chat-bubble { width: 90%; max-width: 500px; background: var(--panel); padding: 20px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 80px; line-height: 1.5; }
-        .hint-text { color: var(--neon); font-size: 0.9rem; margin-top: 5px; opacity: 0.8; animation: blink 2s infinite; }
+        #chat-bubble { width: 90%; max-width: 500px; background: var(--panel); padding: 20px; border-radius: 25px; border: 1px solid var(--neon); text-align: center; font-size: 1.1rem; min-height: 80px; }
+        .hint-text { color: var(--neon); font-size: 0.9rem; margin-top: 5px; animation: blink 2s infinite; }
         @keyframes blink { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.3; } }
-        .main-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 20px; font-weight: bold; }
+        .main-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid var(--neon); background: #000; color: #fff; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -65,7 +65,7 @@
         <div class="hamburger" onclick="toggleSidebar()">☰</div>
         <div class="profile-trigger" onclick="toggleProfile(true)">
             <span id="nav-name" style="font-weight: bold;">المستخدم</span>
-            <img id="nav-avatar" src="https://i.ibb.co/FqbzKKDj/images-4.jpg">
+            <img id="nav-avatar" src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg">
         </div>
     </header>
 
@@ -82,8 +82,8 @@
         <h2 style="color:var(--neon); margin-bottom: 10px;">الملف الشخصي</h2>
         <div class="id-card" id="id-display">ID: 000000000</div>
         <div class="char-grid">
-            <div class="char-item" onclick="updateBotImg('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
             <div class="char-item" onclick="updateBotImg('https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg')"><img src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg"></div>
+            <div class="char-item" onclick="updateBotImg('https://i.ibb.co/FqbzKKDj/images-4.jpg')"><img src="https://i.ibb.co/FqbzKKDj/images-4.jpg"></div>
             <div class="char-item" onclick="updateBotImg('https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg')"><img src="https://img.freepik.com/free-photo/humanoid-robot-working-with-digital-interface_23-2149182351.jpg"></div>
             <div class="char-item" onclick="updateBotImg('https://i.ibb.co/LX81sqyP/1775595508106c.png')"><img src="https://i.ibb.co/LX81sqyP/1775595508106c.png"></div>
         </div>
@@ -92,18 +92,19 @@
 
     <main id="app-main">
         <div class="robot-node" id="r-node" onclick="startMic()">
-            <img id="main-bot-img" src="https://i.ibb.co/FqbzKKDj/images-4.jpg" style="width:100%; height:100%; object-fit:cover;">
+            <img id="main-bot-img" src="https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg" style="width:100%; height:100%; object-fit:cover;">
         </div>
         <div class="hint-text">اضغط على الصورة للتحدث</div>
         <div id="chat-bubble">بانتظارك..</div>
     </main>
 
     <script>
-        const API_KEY = "AIzaSyBvS9aiLFIkBHxO7QqJM_F0upU-4TAyYc8";
-        let user = { name: "", id: "", bot: "https://i.ibb.co/FqbzKKDj/images-4.jpg", lang: "ar" };
+        // مفتاح Hugging Face الجديد الخاص بك يا أمين
+        const HF_KEY = "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";
+        let user = { name: "", id: "", bot: "https://img.freepik.com/free-photo/digital-art-style-female-robot-portrait_23-2151608249.jpg", lang: "ar" };
 
         window.onload = () => {
-            const saved = localStorage.getItem('ameen_v12_pro');
+            const saved = localStorage.getItem('ameen_v13_hf');
             if(saved) { user = JSON.parse(saved); launch(); }
         };
 
@@ -112,7 +113,7 @@
             if(!n) return;
             user.name = n;
             user.id = Math.floor(100000000 + Math.random() * 900000000);
-            localStorage.setItem('ameen_v12_pro', JSON.stringify(user));
+            localStorage.setItem('ameen_v13_hf', JSON.stringify(user));
             launch(true);
         }
 
@@ -147,26 +148,23 @@
         async function askAI(query) {
             document.getElementById('chat-bubble').innerText = "...";
             try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                // استخدام نموذج Mistral من Hugging Face لضمان القوة والسرعة
+                const res = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${HF_KEY}` },
                     body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        messages: [
-                            { role: "system", content: `اسمك سارة. مبرمجك هو أمين الزواحي. تاريخ إنشائك 7 أبريل 2026 (7/4/2026).
-                            اللغة الحالية: ${user.lang}.
-                            إذا سئلت عن اسمك: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 4 شهر 7 (7 أبريل 2026)".
-                            إذا سئلت عن أمين الزواحي: "هو مبرمجي الخاص، وهو الذي اوجدني الى هذا العالم، هو شخص مؤثر في الفيسبوك، يمتلك اكثر من 15000 متابع، لديه محتوى كوميدي، فخور به جداً".` },
-                            { role: "user", content: query }
-                        ],
-                        temperature: 0.6
+                        inputs: `<s>[INST] You are Sara, an AI programmed by Ameen Al-Zawahi. Created on April 7, 2026. 
+                        If asked about your name, say: "انا اسمي ساره، ذكاء اصطناعي برمجني امين الزواحي، وتاريخ الانشاء 2026 4 شهر 7 (7 أبريل 2026)".
+                        If asked about Ameen: "هو مبرمجي الخاص، شخص مؤثر في الفيسبوك بمحتوى كوميدي و15 ألف متابع، فخورة به".
+                        User: ${query} [/INST]`,
+                        parameters: { max_new_tokens: 250, temperature: 0.7 }
                     })
                 });
                 const data = await res.json();
-                const reply = data.choices[0].message.content;
+                let reply = data[0].generated_text.split("[/INST]").pop().trim();
                 document.getElementById('chat-bubble').innerText = reply;
                 speak(reply);
-            } catch (e) { document.getElementById('chat-bubble').innerText = "خطأ في الشبكة."; }
+            } catch (e) { document.getElementById('chat-bubble').innerText = "عذراً، هناك ضغط على الشبكة حالياً."; }
         }
 
         function startMic() {
@@ -183,16 +181,11 @@
             rs.start();
         }
 
-        function setLanguage(l) {
-            user.lang = l;
-            localStorage.setItem('ameen_v12_pro', JSON.stringify(user));
-            location.reload();
-        }
-
+        function setLanguage(l) { user.lang = l; localStorage.setItem('ameen_v13_hf', JSON.stringify(user)); location.reload(); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function toggleProfile(s) { document.getElementById('profile-modal').style.display = s ? 'flex' : 'none'; }
-        function updateBotImg(url) { user.bot = url; localStorage.setItem('ameen_v12_pro', JSON.stringify(user)); location.reload(); }
-        function logout() { localStorage.removeItem('ameen_v12_pro'); location.reload(); }
+        function updateBotImg(url) { user.bot = url; localStorage.setItem('ameen_v13_hf', JSON.stringify(user)); location.reload(); }
+        function logout() { localStorage.removeItem('ameen_v13_hf'); location.reload(); }
     </script>
 </body>
 </html>
